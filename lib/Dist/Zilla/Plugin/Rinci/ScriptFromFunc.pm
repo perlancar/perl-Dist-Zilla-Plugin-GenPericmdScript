@@ -27,9 +27,12 @@ sub munge_files {
 sub munge_file {
 	my ( $self, $file ) = @_;
 
+        my $filename = $file->name;
+        my $filebasename = $filename; $filebasename =~ s!.+/!!;
+
 	unless ($file->name =~ m!(script|bin)/!) {
-            $self->log_debug('Skipping: "' . $file->name . '" (not script)');
-		return;
+            $self->log_debug('Skipping $filename: not script');
+            return;
 	}
 
 	my $version = $self->zilla->version;
@@ -37,17 +40,22 @@ sub munge_file {
 	my $content = $file->content;
 
         $content =~ m/^# FUNC: (.+)/m or do {
-            $self->log_debug('Skipping: "' . $file->name . '" (no "# FUNC: <funcname>" line in script)');
+            $self->log_debug("Skipping $filename: no '# FUNC: <funcname>' line in script");
             return;
         };
 
-
         my $repl = "";
-        $repl .= "\n\n# ABSTRACT: Some abstract\n";
+        $repl .= "# ABSTRACT: Some abstract\n";
+        $repl .= "# PODNAME: $filebasename\n";
+        $repl .= "# DATE\n";
+        $repl .= "# VERSION\n";
+        $repl .= "# code ...\n";
         $repl .= "\n=head1 SYNOPSIS\n\n blah\n\n";
         $repl .= "\n=head1 DESCRIPTION\n\n blah\n";
 
         $content =~ s/^(# FUNC: .+)/$1\n$repl/m;
+        $self->log("Filling out script information for '$filename'");
+        $file->content($content);
 	return;
 }
 __PACKAGE__->meta->make_immutable;
