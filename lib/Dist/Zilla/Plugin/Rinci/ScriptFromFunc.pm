@@ -25,7 +25,7 @@ sub mvp_multivalue_args { qw(script) }
 has script => (is => 'rw');
 
 sub _get_meta {
-    my ($self, $url) = @_;
+    my ($self, $url, $scriptspec) = @_;
 
     state $pa = do {
         require Perinci::Access;
@@ -40,6 +40,9 @@ sub _get_meta {
     # and generate redefine warnings).
 
     local @INC = ("lib", @INC);
+
+    local $ENV{PERL_LWP_SSL_VERIFY_HOSTNAME} = 0
+        unless ($scriptspec->{ssl_verify_hostname} // 1);
 
     my $res = $pa->request(meta => $url);
     $self->log_fatal("Can't get meta $url: $res->[0] - $res->[1]")
@@ -94,7 +97,7 @@ sub gather_files {
             $scriptname =~ s/^-//;
             $scriptname = "script" if length($script) == 0;
         }
-        my $meta = $self->_get_meta($url);
+        my $meta = $self->_get_meta($url, \%scriptspec);
 
         my $content = "";
 
@@ -131,9 +134,10 @@ sub gather_files {
             ($cmdline_mod eq 'Perinci::CmdLine::Any' &&
                  $scriptspec{prefer_lite} ?
                  " -prefer_lite=>1" : ""),
-            ";\n",
-            ($scriptspec{ssl_verify_hostname} // 1 ? "" : '$ENV{PERL_LWP_SSL_VERIFY_HOSTNAME} = 0;' . "\n"),
+            ";\n\n",
+            ($scriptspec{ssl_verify_hostname} // 1 ? "" : '$ENV{PERL_LWP_SSL_VERIFY_HOSTNAME} = 0;' . "\n\n"),
             "$cmdline_mod->new(url => ", dump($url), ")->run;\n",
+            "\n",
         );
 
         # abstract line
