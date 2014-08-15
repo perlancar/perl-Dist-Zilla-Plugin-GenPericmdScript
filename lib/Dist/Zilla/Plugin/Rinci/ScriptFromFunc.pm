@@ -28,8 +28,8 @@ sub _get_meta {
     my ($self, $url) = @_;
 
     state $pa = do {
-        require Perinci::Access::Schemeless;
-        my $pa = Perinci::Access::Schemeless->new;
+        require Perinci::Access;
+        my $pa = Perinci::Access->new;
         $pa;
     };
 
