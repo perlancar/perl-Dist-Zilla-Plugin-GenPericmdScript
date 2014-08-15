@@ -101,7 +101,6 @@ sub gather_files {
 
         my $content = "";
 
-        # code
         my $cmdline_mod = "Perinci::CmdLine::Any";
         if ($scriptspec{cmdline}) {
             my $val = $scriptspec{cmdline};
@@ -115,6 +114,13 @@ sub gather_files {
                 $cmdline_mod = $val;
             }
         }
+        {
+            my $ver = $cmdline_mod eq 'Perinci::CmdLine' ? 1.04 : 0;
+            $self->zilla->register_prereqs(
+                {phase => 'runtime'}, $cmdline_mod => $ver);
+        }
+
+        # code
         $content .= join(
             "",
             "#!perl\n",
