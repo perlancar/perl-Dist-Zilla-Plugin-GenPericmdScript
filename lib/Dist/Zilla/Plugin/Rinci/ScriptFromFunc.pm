@@ -145,7 +145,7 @@ sub gather_files {
                  " -prefer_lite=>1" : ""),
             ";\n\n",
             ($scriptspec{ssl_verify_hostname} // 1 ? "" : '$ENV{PERL_LWP_SSL_VERIFY_HOSTNAME} = 0;' . "\n\n"),
-            ($self->snippet_before_instantiate_cmdline ? "# snippet_before_instantiate_cmdline\n" . $self->snippet_before_instantiate_cmdline . ";\n\n" : ""),
+            ($self->snippet_before_instantiate_cmdline ? "# snippet_before_instantiate_cmdline\n" . $self->snippet_before_instantiate_cmdline . "\n\n" : ""),
             "$cmdline_mod->new(\n",
             "    url => ", dump($url), ",\n",
             (defined($scriptspec{log_any_app}) ? "    log_any_app => ", dump($scriptspec{log_any_app}), ",\n",
