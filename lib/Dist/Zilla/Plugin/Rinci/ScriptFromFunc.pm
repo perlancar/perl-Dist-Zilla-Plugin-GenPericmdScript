@@ -136,6 +136,7 @@ sub gather_files {
             "use strict;\n",
             "use warnings;\n",
             "\n",
+            ($scriptspec{default_log_level} ? "BEGIN { no warnings; \$main::Log_Level = '$scriptspec{default_log_level}'; }\n\n" : ""),
             "use $cmdline_mod",
             ($cmdline_mod eq 'Perinci::CmdLine::Any' &&
                  $scriptspec{prefer_lite} ?
@@ -263,6 +264,14 @@ name.
 
 If set to 1 and you are using C<Perinci::CmdLine::Any>, C<-prefer_lite> option
 will be passed in the code.
+
+=item * default_log_level => str
+
+If set, will add this code to the generated script:
+
+ BEGIN { no warnings; $main::Log_Level = "..." }
+
+This can be used if you want your script to be verbose by default, for example.
 
 =item * ssl_verify_hostname => bool (default: 1)
 
