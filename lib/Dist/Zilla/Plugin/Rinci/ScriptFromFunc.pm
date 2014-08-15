@@ -356,6 +356,15 @@ there.
 
 =over
 
+=item * fatpacker-friendly
+
+Add 'use MODULE' (if function URL points to local module) so dependencies can be
+detected more easily (more fatpacker-friendly).
+
+=item * logging
+
+In Synopsis, add an example on how to enable debugging/tracing.
+
 =item * completion
 
 If C<completion=1>, add instruction on how to enable bash completion in
