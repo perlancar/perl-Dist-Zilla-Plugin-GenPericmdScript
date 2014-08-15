@@ -132,7 +132,7 @@ sub gather_files {
                  $scriptspec{prefer_lite} ?
                  " -prefer_lite=>1" : ""),
             ";\n",
-            ($scriptspec{ssl_verify_hostname} // 1 ? "", '$ENV{PERL_LWP_SSL_VERIFY_HOSTNAME} = 0;' . "\n"),
+            ($scriptspec{ssl_verify_hostname} // 1 ? "" : '$ENV{PERL_LWP_SSL_VERIFY_HOSTNAME} = 0;' . "\n"),
             "$cmdline_mod->new(url => ", dump($url), ")->run;\n",
         );
 
