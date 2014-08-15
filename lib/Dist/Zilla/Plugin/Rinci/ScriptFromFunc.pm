@@ -395,10 +395,14 @@ In Synopsis, add an example on how to enable debugging/tracing.
 If C<completion=1>, add instruction on how to enable bash completion in
 Synopsis.
 
-=item * see also
+=item * link to corresponding module
 
-Link to Perl module (the Version POD section already mentions the dist name
-though).
+Link to corresponding Perl module in See Also (the Version POD section already
+mentions the dist name though).
+
+=item * customize See Also
+
+Allow specifying links
 
 =back
 
