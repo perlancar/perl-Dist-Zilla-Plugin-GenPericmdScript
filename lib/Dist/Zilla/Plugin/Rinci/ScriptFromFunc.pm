@@ -132,6 +132,7 @@ sub gather_files {
                  $scriptspec{prefer_lite} ?
                  " -prefer_lite=>1" : ""),
             ";\n",
+            ($scriptspec{ssl_verify_hostname} // 1 ? "", '$ENV{PERL_LWP_SSL_VERIFY_HOSTNAME} = 0;' . "\n"),
             "$cmdline_mod->new(url => ", dump($url), ")->run;\n",
         );
 
@@ -252,6 +253,14 @@ name.
 
 If set to 1 and you are using C<Perinci::CmdLine::Any>, C<-prefer_lite> option
 will be passed in the code.
+
+=item * ssl_verify_hostname => bool (default: 1)
+
+If set to 0, will add this code to the generated script:
+
+ $ENV{PERL_LWP_SSL_VERIFY_HOSTNAME} = 0;
+
+This can be used if the Riap function URL is https and you don't want to verify.
 
 =back
 
