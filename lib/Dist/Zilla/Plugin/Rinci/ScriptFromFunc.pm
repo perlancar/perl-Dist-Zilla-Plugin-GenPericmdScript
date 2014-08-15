@@ -122,6 +122,7 @@ sub gather_files {
             "\n",
             "# DATE\n",
             "# VERSION\n",
+            "\n",
             "use 5.010001;\n",
             "use strict;\n",
             "use warnings;\n",
