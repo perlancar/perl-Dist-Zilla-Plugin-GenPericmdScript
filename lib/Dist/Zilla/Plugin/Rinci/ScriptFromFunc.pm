@@ -145,8 +145,11 @@ sub gather_files {
                  " -prefer_lite=>1" : ""),
             ";\n\n",
             ($scriptspec{ssl_verify_hostname} // 1 ? "" : '$ENV{PERL_LWP_SSL_VERIFY_HOSTNAME} = 0;' . "\n\n"),
-            ($self->snippet_before_instantiate_cmdline ? "# snippet_before_instantiate_cmdline\n" . $self->snippet_before_instantiate_cmdline . "\n\n" : ""),
-            "$cmdline_mod->new(url => ", dump($url), ")->run;\n",
+            ($self->snippet_before_instantiate_cmdline ? "# snippet_before_instantiate_cmdline\n" . $self->snippet_before_instantiate_cmdline . ";\n\n" : ""),
+            "$cmdline_mod->new(\n",
+            "    url => ", dump($url), ",\n",
+            (defined($scriptspec{log_any_app}) ? "    log_any_app => ", dump($scriptspec{log_any_app}), ",\n",
+            ")->run;\n",
             "\n",
         );
 
@@ -275,6 +278,10 @@ If set, will add this code to the generated script:
  BEGIN { no warnings; $main::Log_Level = "..." }
 
 This can be used if you want your script to be verbose by default, for example.
+
+=item * log_any_app => bool
+
+Set value in the Perinci::CmdLine object construction code.
 
 =item * ssl_verify_hostname => bool (default: 1)
 
