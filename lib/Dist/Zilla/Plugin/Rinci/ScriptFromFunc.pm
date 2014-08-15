@@ -24,6 +24,8 @@ sub mvp_multivalue_args { qw(script) }
 # one or more script specification
 has script => (is => 'rw');
 
+has snippet_before_instantiate_cmdline => (is=>'rw');
+
 sub _get_meta {
     my ($self, $url, $scriptspec) = @_;
 
@@ -143,6 +145,7 @@ sub gather_files {
                  " -prefer_lite=>1" : ""),
             ";\n\n",
             ($scriptspec{ssl_verify_hostname} // 1 ? "" : '$ENV{PERL_LWP_SSL_VERIFY_HOSTNAME} = 0;' . "\n\n"),
+            ($self->snippet_before_instantiate_cmdline ? "# snippet_before_instantiate_cmdline\n" . $self->snippet_before_instantiate_cmdline . "\n\n" : ""),
             "$cmdline_mod->new(url => ", dump($url), ")->run;\n",
             "\n",
         );
@@ -350,6 +353,21 @@ List all the command-line options that the script accepts. Not added if already
 there.
 
 =back
+
+
+=head1 CONFIGURATION
+
+=head2 script => str (multiple allowed)
+
+Specify script to be generated (name, source function, etc). See
+L</"DESCRIPTION"> for more details.
+
+=head2 snippet_* => str
+
+Insert code snippet in various places, for some customization in the process of
+code generation.
+
+ snippet_before_instantiate_cmdline
 
 
 =head1 TODO
