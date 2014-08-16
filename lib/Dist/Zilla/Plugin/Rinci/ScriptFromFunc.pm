@@ -149,7 +149,7 @@ sub gather_files {
             ($self->snippet_before_instantiate_cmdline ? "# snippet_before_instantiate_cmdline\n" . $self->snippet_before_instantiate_cmdline . "\n\n" : ""),
             "$cmdline_mod->new(\n",
             "    url => ", dump($url), ",\n",
-            (defined($scriptspec{log_any_app}) ? "    log_any_app => ", dump($scriptspec{log_any_app}), ",\n",
+            (defined($scriptspec{log_any_app}) ? "    log_any_app => " . dump($scriptspec{log_any_app}) . ",\n" : ""),
             ")->run;\n",
             "\n",
         );
