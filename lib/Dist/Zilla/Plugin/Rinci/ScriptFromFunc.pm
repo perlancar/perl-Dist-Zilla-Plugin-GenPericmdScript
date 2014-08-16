@@ -117,7 +117,8 @@ sub gather_files {
             }
         }
         {
-            my $ver = $cmdline_mod eq 'Perinci::CmdLine' ? 1.04 : 0;
+            my $ver = $cmdline_mod eq 'Perinci::CmdLine' ? 1.04 :
+                $cmdline_mod eq 'Perinci::CmdLine::Any' ? 0.06 : 0;
             $self->zilla->register_prereqs(
                 {phase => 'runtime'}, $cmdline_mod => $ver);
         }
