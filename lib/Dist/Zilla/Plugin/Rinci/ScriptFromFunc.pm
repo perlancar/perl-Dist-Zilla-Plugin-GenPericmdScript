@@ -171,14 +171,15 @@ sub gather_files {
         );
 
         # Description POD section
-        require Markdown::To::POD;
-        $content .= join(
-            "",
-            "\n=head1 DESCRIPTION\n\n",
-            $meta->{description} ?
+        if ($meta->{description}) {
+            require Markdown::To::POD;
+            $content .= join(
+                "",
+                "\n=head1 DESCRIPTION\n\n",
                 Markdown::To::POD::markdown_to_pod($meta->{description}) : '',
-            "\n",
-        );
+                "\n",
+            );
+        }
 
         # Options POD section
         $content .= join(
