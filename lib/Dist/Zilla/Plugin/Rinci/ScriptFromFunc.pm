@@ -176,7 +176,7 @@ sub gather_files {
             $content .= join(
                 "",
                 "\n=head1 DESCRIPTION\n\n",
-                Markdown::To::POD::markdown_to_pod($meta->{description}) : '',
+                Markdown::To::POD::markdown_to_pod($meta->{description}),
                 "\n",
             );
         }

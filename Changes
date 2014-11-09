@@ -1,5 +1,12 @@
 Revision history for Dist-Zilla-Rinci-ScriptFromFunc
 
+0.02    2014-11-09 (PERLANCAR)
+
+	- Adjust to Perinci::CmdLine 1.37 (rename log_any_app to log).
+
+	- Only load Markdown::To::POD if there is description property.
+
+
 0.01     2014-08-16 (SHARYANTO) - Happy 16th CPAN Day!
 
          - First release.
