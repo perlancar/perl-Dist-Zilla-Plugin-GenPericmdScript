@@ -9,11 +9,7 @@ use warnings;
 
 use Moose;
 with (
-	'Dist::Zilla::Role::FileFinderUser' => {
-		default_finders => [ ':ExecFiles' ],
-	},
         'Dist::Zilla::Role::FileGatherer',
-	#'Dist::Zilla::Role::FileMunger',
 );
 
 use namespace::autoclean;
@@ -50,33 +46,6 @@ sub _get_meta {
     $self->log_fatal("Can't get meta $url: $res->[0] - $res->[1]")
         unless $res->[0] == 200;
     $res->[2];
-}
-
-sub munge_files {
-    my $self = shift;
-
-    $self->munge_file($_) for @{ $self->found_files };
-    return;
-}
-
-sub munge_file {
-    my ($self, $file) = @_;
-
-    my $filename = $file->name;
-    my $filebasename = $filename; $filebasename =~ s!.+/!!;
-
-    unless ($file->name =~ m!(script|bin)/!) {
-        $self->log_debug('Skipping $filename: not script');
-        return;
-    }
-
-    my $content = $file->content;
-
-    # do stuffs with content
-
-    $file->content($content);
-
-    return;
 }
 
 sub gather_files {
