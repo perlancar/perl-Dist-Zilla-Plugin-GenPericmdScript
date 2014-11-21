@@ -129,35 +129,6 @@ sub gather_files {
         # podname
         $content .= "# PODNAME: $scriptname\n";
 
-        # Synopsis POD section
-        $content .= join(
-            "",
-            "\n=head1 SYNOPSIS\n\n",
-            "Usage:\n\n % $scriptname\n\n", # XXX
-            "Examples:\n\n TODO\n\n", # XXX
-            "To see all options:\n\n % $scriptname --help\n\n",
-            "\n",
-        );
-
-        # Description POD section
-        if ($meta->{description}) {
-            require Markdown::To::POD;
-            $content .= join(
-                "",
-                "\n=head1 DESCRIPTION\n\n",
-                Markdown::To::POD::markdown_to_pod($meta->{description}),
-                "\n",
-            );
-        }
-
-        # Options POD section
-        $content .= join(
-            "",
-            "\n=head1 OPTIONS\n\n",
-            " TODO\n",
-            "\n",
-        );
-
         my $file = Dist::Zilla::File::InMemory->new(
             name => "bin/$scriptname", content => $content);
         $self->log("Creating script 'bin/$scriptname' from Riap function '$url'");
@@ -381,5 +352,8 @@ Allow specifying links
 =head1 SEE ALSO
 
 L<Rinci>
+
+L<Pod::Weaver::Plugin::Rinci> to fill more stuffs to the POD of the generated
+script.
 
 Other C<Dist::Zilla::Plugin::Rinci::*> for plugins that utilize Rinci metadata.
