@@ -1,5 +1,12 @@
 Revision history for Dist-Zilla-Plugin-Rinci-ScriptFromFunc
 
+0.04    2014-12-31 (PERLANCAR)
+
+	- Add per-script snippet_before_instantiate_cmdline.
+
+        - Check valid properties in script configuration.
+
+
 0.03    2014-11-21 (PERLANCAR)
 
 	- Remove unneeded prereq.
