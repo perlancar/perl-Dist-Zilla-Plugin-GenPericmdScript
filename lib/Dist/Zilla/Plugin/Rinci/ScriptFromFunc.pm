@@ -342,36 +342,6 @@ code generation.
  snippet_before_instantiate_cmdline
 
 
-=head1 TODO
-
-=over
-
-=item * fatpacker-friendly
-
-Add 'use MODULE' (if function URL points to local module) so dependencies can be
-detected more easily (more fatpacker-friendly).
-
-=item * logging
-
-In Synopsis, add an example on how to enable debugging/tracing.
-
-=item * completion
-
-If C<completion=1>, add instruction on how to enable bash completion in
-Synopsis.
-
-=item * link to corresponding module
-
-Link to corresponding Perl module in See Also (the Version POD section already
-mentions the dist name though).
-
-=item * customize See Also
-
-Allow specifying links
-
-=back
-
-
 =head1 SEE ALSO
 
 L<Rinci>
