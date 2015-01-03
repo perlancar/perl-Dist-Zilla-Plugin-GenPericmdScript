@@ -1,5 +1,12 @@
 Revision history for Dist-Zilla-Plugin-Rinci-ScriptFromFunc
 
+0.05    2015-01-03 (PERLANCAR)
+
+	- No functional changes.
+
+	- Rebuild (Generate TODO.md).
+
+
 0.04    2014-12-31 (PERLANCAR)
 
 	- Add per-script snippet_before_instantiate_cmdline.
