@@ -31,6 +31,7 @@ our %KNOWN_SCRIPT_SPEC_PROPS = (
     log => 1,
     ssl_verify_hostname => 1,
     snippet_before_instantiate_cmdline => 1,
+    config_filename => 1,
 );
 
 sub _get_meta {
@@ -138,6 +139,7 @@ sub gather_files {
             "$cmdline_mod->new(\n",
             "    url => ", dump($url), ",\n",
             (defined($scriptspec{log}) ? "    log => " . dump($scriptspec{log}) . ",\n" : ""),
+            (defined($scriptspec{config_filename}) ? "    config_filename => " . dump($scriptspec{config_filename}) . ",\n" : ""),
             ")->run;\n",
             "\n",
         );
