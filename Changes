@@ -1,5 +1,10 @@
 Revision history for Dist-Zilla-Plugin-Rinci-ScriptFromFunc
 
+0.06    2015-01-10 (PERLANCAR)
+
+	- Add config_filename to script spec.
+
+
 0.05    2015-01-03 (PERLANCAR)
 
 	- No functional changes.
