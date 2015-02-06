@@ -14,6 +14,7 @@ with (
 
 use namespace::autoclean;
 use Data::Dump qw(dump);
+use Module::Load;
 
 sub mvp_multivalue_args { qw(script) }
 
@@ -32,6 +33,7 @@ our %KNOWN_SCRIPT_SPEC_PROPS = (
     ssl_verify_hostname => 1,
     snippet_before_instantiate_cmdline => 1,
     config_filename => 1,
+    load_modules => 1,
 );
 
 sub _get_meta {
@@ -84,6 +86,10 @@ sub gather_files {
             $scriptname =~ s/^-//;
             $scriptname = "script" if length($script) == 0;
         }
+        my $load_modules = $scriptspec{load_modules};
+        if ($load_modules) {
+            load $_ for split(/\s*,\s*/, $load_modules);
+        }
         my $meta = $self->_get_meta($url, \%scriptspec);
 
         my $content = "";
@@ -127,6 +133,7 @@ sub gather_files {
             "use strict;\n",
             "use warnings;\n",
             "\n",
+            ($load_modules ? join("", map {"use $_;\n"} split(/\s*,\s*/, $load_modules))."\n" : ""),
             ($scriptspec{default_log_level} ? "BEGIN { no warnings; \$main::Log_Level = '$scriptspec{default_log_level}'; }\n\n" : ""),
             "use $cmdline_mod",
             ($cmdline_mod eq 'Perinci::CmdLine::Any' &&
