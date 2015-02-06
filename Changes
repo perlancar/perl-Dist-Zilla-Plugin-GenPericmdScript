@@ -1,5 +1,10 @@
 Revision history for Dist-Zilla-Plugin-Rinci-ScriptFromFunc
 
+0.08    2015-02-06 (PERLANCAR)
+
+	- Add load_modules to script spec.
+
+
 0.07    2015-02-06 (PERLANCAR)
 
 	- Adjust to Perinci::CmdLine -> Perinci::CmdLine::Classic rename,
