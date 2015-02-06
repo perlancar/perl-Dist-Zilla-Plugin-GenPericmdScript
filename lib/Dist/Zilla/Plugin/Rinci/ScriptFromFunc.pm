@@ -94,7 +94,7 @@ sub gather_files {
             if ($val eq 'any') {
                 $cmdline_mod = "Perinci::CmdLine::Any";
             } elsif ($val eq 'classic') {
-                $cmdline_mod = "Perinci::CmdLine";
+                $cmdline_mod = "Perinci::CmdLine::Classic";
             } elsif ($val eq 'lite') {
                 $cmdline_mod = "Perinci::CmdLine::Lite";
             } else {
@@ -102,8 +102,7 @@ sub gather_files {
             }
         }
         {
-            my $ver = $cmdline_mod eq 'Perinci::CmdLine' ? 1.04 :
-                $cmdline_mod eq 'Perinci::CmdLine::Any' ? 0.06 : 0;
+            my $ver = 0;
             $self->zilla->register_prereqs(
                 {phase => 'runtime'}, $cmdline_mod => $ver);
         }
@@ -131,8 +130,8 @@ sub gather_files {
             ($scriptspec{default_log_level} ? "BEGIN { no warnings; \$main::Log_Level = '$scriptspec{default_log_level}'; }\n\n" : ""),
             "use $cmdline_mod",
             ($cmdline_mod eq 'Perinci::CmdLine::Any' &&
-                 $scriptspec{prefer_lite} ?
-                 " -prefer_lite=>1" : ""),
+                 !$scriptspec{prefer_lite} ?
+                 " -prefer_lite=>0" : ""),
             ";\n\n",
             ($scriptspec{ssl_verify_hostname} // 1 ? "" : '$ENV{PERL_LWP_SSL_VERIFY_HOSTNAME} = 0;' . "\n\n"),
             ($snippet_before_instantiate_cmdline ? "# snippet_before_instantiate_cmdline\n" . $snippet_before_instantiate_cmdline . "\n\n" : ""),
@@ -225,13 +224,13 @@ replaced to C<->.
 =item * cmdline => str
 
 Select module to use. Default is L<Perinci::CmdLine::Any>, but you can set this
-to C<classic> (equals to L<Perinci::CmdLine>), C<any>
+to C<classic> (equals to L<Perinci::CmdLine::Classic>), C<any>
 (L<Perinci::CmdLine::Any>), or C<lite> (L<Perinci::CmdLine::Lite>) or module
 name.
 
-=item * prefer_lite => bool
+=item * prefer_lite => bool (default: 1)
 
-If set to 1 and you are using C<Perinci::CmdLine::Any>, C<-prefer_lite> option
+If set to 0 and you are using C<Perinci::CmdLine::Any>, C<-prefer_lite> option
 will be passed in the code.
 
 =item * default_log_level => str
