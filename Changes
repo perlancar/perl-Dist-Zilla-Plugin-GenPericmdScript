@@ -1,5 +1,11 @@
 Revision history for Dist-Zilla-Plugin-Rinci-ScriptFromFunc
 
+0.07    2015-02-06 (PERLANCAR)
+
+	- Adjust to Perinci::CmdLine -> Perinci::CmdLine::Classic rename,
+	  ::Lite is now the preferred default.
+
+
 0.06    2015-01-10 (PERLANCAR)
 
 	- Add config_filename to script spec.
