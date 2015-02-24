@@ -137,7 +137,7 @@ sub gather_files {
             ($scriptspec{default_log_level} ? "BEGIN { no warnings; \$main::Log_Level = '$scriptspec{default_log_level}'; }\n\n" : ""),
             "use $cmdline_mod",
             ($cmdline_mod eq 'Perinci::CmdLine::Any' &&
-                 !$scriptspec{prefer_lite} ?
+                 defined($scriptspec{prefer_lite}) && !$scriptspec{prefer_lite} ?
                  " -prefer_lite=>0" : ""),
             ";\n\n",
             ($scriptspec{ssl_verify_hostname} // 1 ? "" : '$ENV{PERL_LWP_SSL_VERIFY_HOSTNAME} = 0;' . "\n\n"),
