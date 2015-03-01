@@ -1,5 +1,12 @@
 Revision history for Dist-Zilla-Plugin-Rinci-ScriptFromFunc
 
+0.10    2015-03-01 (PERLANCAR)
+
+	- No functional changes.
+
+	- Extract core functionality to another dist App-GenPericmdScript.
+
+
 0.09    2015-02-24 (PERLANCAR)
 
 	- Fix setting prefer_lite=1 by default.
