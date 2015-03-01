@@ -13,7 +13,8 @@ with (
 );
 
 use namespace::autoclean;
-use Data::Dump qw(dump);
+
+use App::GenPericmdScript qw(gen_perinci_cmdline_script);
 use Module::Load;
 
 sub mvp_multivalue_args { qw(script) }
@@ -36,34 +37,15 @@ our %KNOWN_SCRIPT_SPEC_PROPS = (
     load_modules => 1,
 );
 
-sub _get_meta {
-    my ($self, $url, $scriptspec) = @_;
-
-    state $pa = do {
-        require Perinci::Access;
-        my $pa = Perinci::Access->new;
-        $pa;
-    };
+sub gather_files {
+    my ($self, $arg) = @_;
 
     # i do it this way (unshift @INC, "lib" + require "Foo/Bar.pm" instead of
     # unshift @INC, "." + require "lib/Foo/Bar.pm") in my all other Dist::Zilla
     # and Pod::Weaver plugin, so they can work together (require "Foo/Bar.pm"
     # and require "lib/Foo/Bar.pm" would cause Perl to load the same file twice
     # and generate redefine warnings).
-
     local @INC = ("lib", @INC);
-
-    local $ENV{PERL_LWP_SSL_VERIFY_HOSTNAME} = 0
-        unless ($scriptspec->{ssl_verify_hostname} // 1);
-
-    my $res = $pa->request(meta => $url);
-    $self->log_fatal("Can't get meta $url: $res->[0] - $res->[1]")
-        unless $res->[0] == 200;
-    $res->[2];
-}
-
-sub gather_files {
-    my ($self, $arg) = @_;
 
     require Dist::Zilla::File::InMemory;
 
@@ -86,78 +68,36 @@ sub gather_files {
             $scriptname =~ s/^-//;
             $scriptname = "script" if length($script) == 0;
         }
-        my $load_modules = $scriptspec{load_modules};
-        if ($load_modules) {
-            load $_ for split(/\s*,\s*/, $load_modules);
-        }
-        my $meta = $self->_get_meta($url, \%scriptspec);
-
-        my $content = "";
-
-        my $cmdline_mod = "Perinci::CmdLine::Any";
-        if ($scriptspec{cmdline}) {
-            my $val = $scriptspec{cmdline};
-            if ($val eq 'any') {
-                $cmdline_mod = "Perinci::CmdLine::Any";
-            } elsif ($val eq 'classic') {
-                $cmdline_mod = "Perinci::CmdLine::Classic";
-            } elsif ($val eq 'lite') {
-                $cmdline_mod = "Perinci::CmdLine::Lite";
-            } else {
-                $cmdline_mod = $val;
-            }
-        }
-        {
-            my $ver = 0;
-            $self->zilla->register_prereqs(
-                {phase => 'runtime'}, $cmdline_mod => $ver);
-        }
 
         my $snippet_before_instantiate_cmdline =
             $scriptspec{snippet_before_instantiate_cmdline} //
                 $self->snippet_before_instantiate_cmdline;
 
-        # code
-        $content .= join(
-            "",
-            "#!perl\n",
-            "\n",
-            "# Note: This script is a CLI interface to Riap function $url\n",
-            "# and generated automatically using ", __PACKAGE__,
-            " version ", ($Dist::Zilla::Plugin::Rinci::ScriptFromFunc::VERSION // '?'), "\n",
-            "\n",
-            "# DATE\n",
-            "# VERSION\n",
-            "\n",
-            "use 5.010001;\n",
-            "use strict;\n",
-            "use warnings;\n",
-            "\n",
-            ($load_modules ? join("", map {"use $_;\n"} split(/\s*,\s*/, $load_modules))."\n" : ""),
-            ($scriptspec{default_log_level} ? "BEGIN { no warnings; \$main::Log_Level = '$scriptspec{default_log_level}'; }\n\n" : ""),
-            "use $cmdline_mod",
-            ($cmdline_mod eq 'Perinci::CmdLine::Any' &&
-                 defined($scriptspec{prefer_lite}) && !$scriptspec{prefer_lite} ?
-                 " -prefer_lite=>0" : ""),
-            ";\n\n",
-            ($scriptspec{ssl_verify_hostname} // 1 ? "" : '$ENV{PERL_LWP_SSL_VERIFY_HOSTNAME} = 0;' . "\n\n"),
-            ($snippet_before_instantiate_cmdline ? "# snippet_before_instantiate_cmdline\n" . $snippet_before_instantiate_cmdline . "\n\n" : ""),
-            "$cmdline_mod->new(\n",
-            "    url => ", dump($url), ",\n",
-            (defined($scriptspec{log}) ? "    log => " . dump($scriptspec{log}) . ",\n" : ""),
-            (defined($scriptspec{config_filename}) ? "    config_filename => " . dump($scriptspec{config_filename}) . ",\n" : ""),
-            ")->run;\n",
-            "\n",
+        my $res = gen_perinci_cmdline_script(
+            url => $url,
+            script_name => $scriptname,
+            interpreter_path => 'perl',
+            load_module => $scriptspec{load_modules} ? [split(/\s*,\s*/, $scriptspec{load_modules})] : undef,
+            log => $scriptspec{log},
+            default_log_level => $scriptspec{default_log_level},
+            cmdline => $scriptspec{cmdline},
+            prefer_lite => $scriptspec{prefer_lite},
+            ssl_verify_hostname => $scriptspec{ssl_verify_hostname},
+            snippet_before_instantiate_cmdline => $snippet_before_instantiate_cmdline,
+            config_filename => $scriptspec{config_filename},
         );
+        $self->log_fatal("Failed generating $scriptname: $res->[0] - $res->[1]")
+            unless $res->[0] == 200;
 
-        # abstract line
-        $content .= "# ABSTRACT: " . ($meta->{summary} // $scriptname) . "\n";
-
-        # podname
-        $content .= "# PODNAME: $scriptname\n";
+        {
+            my $ver = 0;
+            $self->zilla->register_prereqs(
+                {phase => 'runtime'}, $res->[3]{'func.cmdline_module'} =>
+                    $res->[3]{'func.cmdline_module_version'});
+        }
 
         my $file = Dist::Zilla::File::InMemory->new(
-            name => "bin/$scriptname", content => $content);
+            name => "bin/$scriptname", content => $res->[2]);
         $self->log("Creating script 'bin/$scriptname' from Riap function '$url'");
         $self->add_file($file);
     }
@@ -250,7 +190,11 @@ This can be used if you want your script to be verbose by default, for example.
 
 =item * log => bool
 
-Set value in the Perinci::CmdLine object construction code.
+Will be passed to Perinci::CmdLine object construction code.
+
+=item * config_filename => str
+
+Will be passed to Perinci::CmdLine object construction code.
 
 =item * ssl_verify_hostname => bool (default: 1)
 
