@@ -37,6 +37,9 @@ our %KNOWN_SCRIPT_SPEC_PROPS = (
     config_filename => 1,
     load_modules => 1,
     subcommands => 1,
+    subcommands_from_package_functions => 1,
+    include_package_functions_match => 1,
+    exclude_package_functions_match => 1,
 );
 
 sub gather_files {
@@ -92,7 +95,10 @@ sub gather_files {
             ssl_verify_hostname => $scriptspec{ssl_verify_hostname},
             snippet_before_instantiate_cmdline => $snippet_before_instantiate_cmdline,
             config_filename => $scriptspec{config_filename},
-            subcommand => $subcommands,
+            (subcommand => $subcommands) x !!$subcommands,
+            subcommands_from_package_functions => $scriptspec{subcommands_from_package_functions},
+            (include_package_functions_match => $scriptspec{include_package_functions_match}) x !!$scriptspec{include_package_functions_match},
+            (exclude_package_functions_match => $scriptspec{exclude_package_functions_match}) x !!$scriptspec{exclude_package_functions_match},
         );
         $self->log_fatal("Failed generating $scriptname: $res->[0] - $res->[1]")
             unless $res->[0] == 200;
@@ -226,6 +232,18 @@ of subcommand specification. Each subcommand specification must be in the form
 of SUBCOMMAND_NAME:URL[:SUMMARY]. Example:
 
  delete:/My/App/delete_item, add:/My/App/add_item, refresh:/My/App/refresh_item:Refetch an item from source
+
+=item * subcommands_from_package_functions => bool
+
+Will be passed to App::GenPericmdScript::gen_perinci_cmdline_script() backend.
+
+=item * include_package_functions_match => re
+
+Will be passed to App::GenPericmdScript::gen_perinci_cmdline_script() backend.
+
+=item * exclude_package_functions_match => re
+
+Will be passed to App::GenPericmdScript::gen_perinci_cmdline_script() backend.
 
 =back
 
