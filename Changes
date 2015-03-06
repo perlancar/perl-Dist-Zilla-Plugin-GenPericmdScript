@@ -1,5 +1,15 @@
 Revision history for Dist-Zilla-Plugin-Rinci-ScriptFromFunc
 
+0.11    2015-03-06 (PERLANCAR)
+
+        - Rename script spec key 'func' to 'url' (old name will be supported for
+          a while).
+
+        - Add support for bulding CLI script with subcommands (new script spec
+          keys: subcommands, subcommands_from_package_functions,
+          include_package_functions_match, exclude_package_functions_match).
+
+
 0.10    2015-03-01 (PERLANCAR)
 
 	- No functional changes.
