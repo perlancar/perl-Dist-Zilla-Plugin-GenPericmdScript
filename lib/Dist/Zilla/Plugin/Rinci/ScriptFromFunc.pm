@@ -25,7 +25,8 @@ has script => (is => 'rw');
 has snippet_before_instantiate_cmdline => (is=>'rw');
 
 our %KNOWN_SCRIPT_SPEC_PROPS = (
-    func => 1,
+    func => 1, # XXX old, will be removed later
+    url => 1,
     name => 1,
     cmdline => 1,
     prefer_lite => 1,
@@ -35,6 +36,7 @@ our %KNOWN_SCRIPT_SPEC_PROPS = (
     snippet_before_instantiate_cmdline => 1,
     config_filename => 1,
     load_modules => 1,
+    subcommands => 1,
 );
 
 sub gather_files {
@@ -58,8 +60,8 @@ sub gather_files {
             $self->log_fatal("Unknown spec property '$_' (script=$script)")
                 unless $KNOWN_SCRIPT_SPEC_PROPS{$_};
         }
-        my $url = $scriptspec{func}
-            or $self->log_fatal("No func URL ('func') specified (script=$script)");
+        my $url = $scriptspec{url} // $scriptspec{func} # XXX func is deprecated
+            or $self->log_fatal("No URL specified (script=$script)");
         my $scriptname = $scriptspec{name};
         if (!$scriptname) {
             $scriptname = $url;
@@ -73,6 +75,11 @@ sub gather_files {
             $scriptspec{snippet_before_instantiate_cmdline} //
                 $self->snippet_before_instantiate_cmdline;
 
+        my $subcommands;
+        if ($scriptspec{subcommands}) {
+            $subcommands = [split /\s*;\s*/, $scriptspec{subcommands}];
+        }
+
         my $res = gen_perinci_cmdline_script(
             url => $url,
             script_name => $scriptname,
@@ -85,6 +92,7 @@ sub gather_files {
             ssl_verify_hostname => $scriptspec{ssl_verify_hostname},
             snippet_before_instantiate_cmdline => $snippet_before_instantiate_cmdline,
             config_filename => $scriptspec{config_filename},
+            subcommand => $subcommands,
         );
         $self->log_fatal("Failed generating $scriptname: $res->[0] - $res->[1]")
             unless $res->[0] == 200;
@@ -115,8 +123,8 @@ __PACKAGE__->meta->make_immutable;
 In C<dist.ini>:
 
  [Rinci::ScriptFromFunc]
- script= func=/My/Palindrome/check_palindrome,
- script= name=lssrv, func=/My/App/list_servers
+ script= url=/My/Palindrome/check_palindrome
+ script= name=lssrv, url=/My/App/list_servers
 
 After build, C<bin/check-palindrome> and C<bin/lssrv> will be created.
 
@@ -149,19 +157,22 @@ much more than:
 
 This Dist::Zilla plugin lets you automate the creation of such scripts.
 
-B<Creating scripts.> To create a script, put this in C<dist.ini>:
+B<Creating scripts.> To create a single script, put this in C<dist.ini>:
 
  [Rinci::ScriptFromFunc]
- script= func=/My/Palindrome/check_palindrome, abstract=Check if a text is a palindrome
+ script= url=/My/Palindrome/check_palindrome, abstract=Check if a text is a palindrome
 
 To create more scripts, add more C<script=...> lines. Each C<script=...> line is
-a script specification, containing comma-separated key=value items. Known keys:
+a script specification, containing semicolon-separated key=value items. Known
+keys:
 
 =over
 
-=item * func => str
+=item * url => str
 
-Riap function URL.
+Riap URL. If the script does not contain subcommand, this should refer to a
+function URL. If the script contains subcommands, this should usually refer to a
+package URL.
 
 =item * name => str
 
@@ -207,6 +218,14 @@ This can be used if the Riap function URL is https and you don't want to verify.
 =item * snippet_before_instantiate_cmdline => str
 
 This is like the configuration, but per-script.
+
+=item * subcommands => str
+
+For creating a CLI script with subcommands. Value is a comma-separated entries
+of subcommand specification. Each subcommand specification must be in the form
+of SUBCOMMAND_NAME:URL[:SUMMARY]. Example:
+
+ delete:/My/App/delete_item, add:/My/App/add_item, refresh:/My/App/refresh_item:Refetch an item from source
 
 =back
 
