@@ -1,6 +1,6 @@
 Revision history for Dist-Zilla-Plugin-GenPericmdScript
 
-0.12    2015-07-01 (PERLANCAR) (unreleased)
+0.12    2015-07-01 (PERLANCAR)
 
         - Rename module/dist from Dist-Zilla-Plugin-Rinci-ScriptFromFunc to
           Dist-Zilla-Plugin-GenPericmdScript.
