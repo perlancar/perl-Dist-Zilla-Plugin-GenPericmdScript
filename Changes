@@ -1,4 +1,18 @@
-Revision history for Dist-Zilla-Plugin-Rinci-ScriptFromFunc
+Revision history for Dist-Zilla-Plugin-GenPericmdScript
+
+0.12    2015-07-01 (PERLANCAR) (unreleased)
+
+        - Rename module/dist from Dist-Zilla-Plugin-Rinci-ScriptFromFunc to
+          Dist-Zilla-Plugin-GenPericmdScript.
+
+        - Change configuration so that all script specification are direct
+          plugin option, and each plugin only creates a single script (but you
+          can always load the same plugin again with [Plugin/Name] syntax to
+          create another script. Note that 'log' now becomes 'enable_log'
+          because it clashes with Dist::Zilla::Plugin's 'log' method.
+
+        - Add configuration: extra_urls_for_version.
+
 
 0.11    2015-03-06 (PERLANCAR)
 
