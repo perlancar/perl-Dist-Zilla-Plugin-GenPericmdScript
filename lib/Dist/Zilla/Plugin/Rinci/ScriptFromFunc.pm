@@ -9,7 +9,7 @@ use warnings;
 
 use Moose;
 with (
-        'Dist::Zilla::Role::FileGatherer',
+    'Dist::Zilla::Role::FileGatherer',
 );
 
 use namespace::autoclean;
@@ -270,6 +270,10 @@ Not added when not creating.
 =item * C<# DATE> line
 
 See L<Dist::Zilla::Plugin::OurDate>. Not added if already there.
+
+=item * C<# DIST> line
+
+See L<Dist::Zilla::Plugin::OurDist>. Not added if already there.
 
 =item * C<# VERSION> line
 
