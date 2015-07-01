@@ -66,7 +66,7 @@ sub gather_files {
         interpreter_path => 'perl',
         load_module => $self->load_modules ? [split(/\s*,\s*/, $self->load_modules)] : undef,
         log => $self->enable_log,
-        extra_urls_for_version => $self->extra_urls_for_version ? [split(/\s*,\s*/, $self->extra_urls_for_version)] : undef,
+        ($self->extra_urls_for_version ? (extra_urls_for_version => [split(/\s*,\s*/, $self->extra_urls_for_version)]) : ()),
         default_log_level => $self->default_log_level,
         cmdline => $self->cmdline,
         prefer_lite => $self->prefer_lite,
