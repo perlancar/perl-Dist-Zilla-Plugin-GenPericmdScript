@@ -62,6 +62,7 @@ sub gather_files {
     my $res = gen_perinci_cmdline_script(
         url => $self->url,
         script_name => $scriptname,
+        script_version => $self->zilla->version,
         interpreter_path => 'perl',
         load_module => $self->load_modules ? [split(/\s*,\s*/, $self->load_modules)] : undef,
         log => $self->enable_log,
