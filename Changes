@@ -1,5 +1,12 @@
 Revision history for Dist-Zilla-Plugin-GenPericmdScript
 
+0.14    2015-07-02 (PERLANCAR)
+
+	- No functional changes.
+
+	- [doc] Forgot to document load_modules configuration.
+
+
 0.13    2015-07-01 (PERLANCAR)
 
 	- [Bugfix] Avoid setting undef value for extra_urls_for_version.
