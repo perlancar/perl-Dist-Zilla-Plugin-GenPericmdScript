@@ -1,5 +1,11 @@
 Revision history for Dist-Zilla-Plugin-GenPericmdScript
 
+0.15    2015-07-02 (PERLANCAR)
+
+	- Pass version to App::GenPericmdScript's script_version (which
+	  will be passed on to Perinci::CmdLine::Inline).
+
+
 0.14    2015-07-02 (PERLANCAR)
 
 	- No functional changes.
