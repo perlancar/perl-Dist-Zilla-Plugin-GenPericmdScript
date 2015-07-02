@@ -17,22 +17,21 @@ use namespace::autoclean;
 use App::GenPericmdScript qw(gen_perinci_cmdline_script);
 use Module::Load;
 
-has snippet_before_instantiate_cmdline => (is=>'rw');
 has url => (is=>'rw', required=>1);
-has name => (is=>'rw');
-has cmdline => (is=>'rw');
-has prefer_lite => (is=>'rw');
-has default_log_level => (is=>'rw');
-has enable_log => (is=>'rw');
-has extra_urls_for_version => (is=>'rw');
-has ssl_verify_hostname => (is=>'rw');
-has snippet_before_instantiate_cmdline => (is=>'rw');
-has config_filename => (is=>'rw');
-has load_modules => (is=>'rw');
 has subcommands => (is=>'rw');
 has subcommands_from_package_functions => (is=>'rw');
 has include_package_functions_match => (is=>'rw');
 has exclude_package_functions_match => (is=>'rw');
+has name => (is=>'rw');
+has cmdline => (is=>'rw');
+has prefer_lite => (is=>'rw');
+has enable_log => (is=>'rw');
+has default_log_level => (is=>'rw');
+has extra_urls_for_version => (is=>'rw');
+has config_filename => (is=>'rw');
+has ssl_verify_hostname => (is=>'rw');
+has load_modules => (is=>'rw');
+has snippet_before_instantiate_cmdline => (is=>'rw');
 
 sub gather_files {
     my ($self, $arg) = @_;
@@ -169,56 +168,6 @@ Riap URL. If the script does not contain subcommand, this should refer to a
 function URL. If the script contains subcommands, this should usually refer to a
 package URL.
 
-=head2 name => str
-
-Name of script to create. Default will be taken from function name, with C<_>
-replaced to C<->.
-
-=head2 cmdline => str
-
-Select module to use. Default is L<Perinci::CmdLine::Any>, but you can set this
-to C<classic> (equals to L<Perinci::CmdLine::Classic>), C<any>
-(L<Perinci::CmdLine::Any>), or C<lite> (L<Perinci::CmdLine::Lite>) or module
-name.
-
-=head2 prefer_lite => bool (default: 1)
-
-If set to 0 and you are using C<Perinci::CmdLine::Any>, C<-prefer_lite> option
-will be passed in the code.
-
-=head2 default_log_level => str
-
-If set, will add this code to the generated script:
-
- BEGIN { no warnings; $main::Log_Level = "..." }
-
-This can be used if you want your script to be verbose by default, for example.
-
-=head2 enable_log => bool
-
-Will be passed to Perinci::CmdLine object construction code (as C<log>).
-
-=head2 extra_urls_for_version => str
-
-Comma-separated string, will be passed to Perinci::CmdLine object construction
-code (as array).
-
-=head2 config_filename => str
-
-Will be passed to Perinci::CmdLine object construction code.
-
-=head2 ssl_verify_hostname => bool (default: 1)
-
-If set to 0, will add this code to the generated script:
-
- $ENV{PERL_LWP_SSL_VERIFY_HOSTNAME} = 0;
-
-This can be used if the Riap function URL is https and you don't want to verify.
-
-=head2 snippet_before_instantiate_cmdline => str
-
-This is like the configuration, but per-script.
-
 =head2 subcommands => str
 
 For creating a CLI script with subcommands. Value is a comma-separated entries
@@ -238,6 +187,60 @@ Will be passed to App::GenPericmdScript::gen_perinci_cmdline_script() backend.
 =head2 exclude_package_functions_match => re
 
 Will be passed to App::GenPericmdScript::gen_perinci_cmdline_script() backend.
+
+=head2 name => str
+
+Name of script to create. Default will be taken from function name, with C<_>
+replaced to C<->.
+
+=head2 cmdline => str
+
+Select module to use. Default is L<Perinci::CmdLine::Any>, but you can set this
+to C<classic> (equals to L<Perinci::CmdLine::Classic>), C<any>
+(L<Perinci::CmdLine::Any>), or C<lite> (L<Perinci::CmdLine::Lite>) or module
+name.
+
+=head2 prefer_lite => bool (default: 1)
+
+If set to 0 and you are using C<Perinci::CmdLine::Any>, C<-prefer_lite> option
+will be passed in the code.
+
+=head2 enable_log => bool
+
+Will be passed to Perinci::CmdLine object construction code (as C<log>).
+
+=head2 default_log_level => str
+
+If set, will add this code to the generated script:
+
+ BEGIN { no warnings; $main::Log_Level = "..." }
+
+This can be used if you want your script to be verbose by default, for example.
+
+=head2 extra_urls_for_version => str
+
+Comma-separated string, will be passed to Perinci::CmdLine object construction
+code (as array).
+
+=head2 config_filename => str
+
+Will be passed to Perinci::CmdLine object construction code.
+
+=head2 ssl_verify_hostname => bool (default: 1)
+
+If set to 0, will add this code to the generated script:
+
+ $ENV{PERL_LWP_SSL_VERIFY_HOSTNAME} = 0;
+
+This can be used if the Riap function URL is https and you don't want to verify.
+
+=head2 load_modules => str
+
+Comma-separated string, extra modules to load in the generated script.
+
+=head2 snippet_before_instantiate_cmdline => str
+
+This is like the configuration, but per-script.
 
 
 =head1 SEE ALSO
