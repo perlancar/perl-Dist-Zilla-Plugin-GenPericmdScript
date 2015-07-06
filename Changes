@@ -1,5 +1,13 @@
 Revision history for Dist-Zilla-Plugin-GenPericmdScript
 
+0.17    2015-07-06 (PERLANCAR)
+
+	- Generate script in the later file munging phase instead of the
+	  earlier file gathering phase, so we can get the more built
+	  version of modules when we need to include/embed dist modules
+	  into the generated script.
+
+
 0.16    2015-07-06 (PERLANCAR)
 
         - Use built version of dist modules to include in scripts (i.e. when we
