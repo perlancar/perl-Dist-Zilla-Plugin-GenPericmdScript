@@ -10,6 +10,7 @@ use warnings;
 use Moose;
 with (
     'Dist::Zilla::Role::FileGatherer',
+    'Dist::Zilla::Role::PERLANCAR::WriteModules',
 );
 
 use namespace::autoclean;
@@ -59,33 +60,44 @@ sub gather_files {
         $subcommands = [split /\s*,\s*/, $self->subcommands];
     }
 
-    my $res = gen_perinci_cmdline_script(
-        url => $self->url,
-        script_name => $scriptname,
-        script_version => $self->zilla->version,
-        interpreter_path => 'perl',
-        load_module => $self->load_modules ? [split(/\s*,\s*/, $self->load_modules)] : undef,
-        log => $self->enable_log,
-        ($self->extra_urls_for_version ? (extra_urls_for_version => [split(/\s*,\s*/, $self->extra_urls_for_version)]) : ()),
-        default_log_level => $self->default_log_level,
-        cmdline => $self->cmdline,
-        prefer_lite => $self->prefer_lite,
-        ssl_verify_hostname => $self->ssl_verify_hostname,
-        snippet_before_instantiate_cmdline => $self->snippet_before_instantiate_cmdline,
-        config_filename => $self->config_filename,
-        (subcommand => $subcommands) x !!$subcommands,
-        subcommands_from_package_functions => $self->subcommands_from_package_functions,
-        (include_package_functions_match => $self->include_package_functions_match) x !!$self->include_package_functions_match,
-        (exclude_package_functions_match => $self->exclude_package_functions_match) x !!$self->exclude_package_functions_match,
-    );
-    $self->log_fatal("Failed generating $scriptname: $res->[0] - $res->[1]")
-        unless $res->[0] == 200;
+    my $res;
+    {
+        # if we use Perinci::CmdLine::Inline, the script might include module(s)
+        # from the current dist and we need the built version, not the source
+        # version
+        $self->write_modules_to_dir;
+        my $mods_tempdir = $self->written_modules_dir;
+
+        local @INC = ($mods_tempdir, @INC);
+        $res = gen_perinci_cmdline_script(
+            url => $self->url,
+            script_name => $scriptname,
+            script_version => $self->zilla->version,
+            interpreter_path => 'perl',
+            load_module => $self->load_modules ? [split(/\s*,\s*/, $self->load_modules)] : undef,
+            log => $self->enable_log,
+            ($self->extra_urls_for_version ? (extra_urls_for_version => [split(/\s*,\s*/, $self->extra_urls_for_version)]) : ()),
+            default_log_level => $self->default_log_level,
+            cmdline => $self->cmdline,
+            prefer_lite => $self->prefer_lite,
+            ssl_verify_hostname => $self->ssl_verify_hostname,
+            snippet_before_instantiate_cmdline => $self->snippet_before_instantiate_cmdline,
+            config_filename => $self->config_filename,
+            (subcommand => $subcommands) x !!$subcommands,
+            subcommands_from_package_functions => $self->subcommands_from_package_functions,
+            (include_package_functions_match => $self->include_package_functions_match) x !!$self->include_package_functions_match,
+            (exclude_package_functions_match => $self->exclude_package_functions_match) x !!$self->exclude_package_functions_match,
+        );
+        $self->log_fatal("Failed generating $scriptname: $res->[0] - $res->[1]")
+            unless $res->[0] == 200;
+    }
 
     {
         my $ver = 0;
         $self->zilla->register_prereqs(
             {phase => 'runtime'}, $res->[3]{'func.cmdline_module'} =>
-                $res->[3]{'func.cmdline_module_version'});
+                $res->[3]{'func.cmdline_module_version'})
+            unless $res->[3]{'func.cmdline_module_inlined'};
     }
 
     my $fileobj = Dist::Zilla::File::InMemory->new(
