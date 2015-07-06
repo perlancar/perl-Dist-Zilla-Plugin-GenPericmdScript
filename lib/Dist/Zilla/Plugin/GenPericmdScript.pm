@@ -10,6 +10,7 @@ use warnings;
 use Moose;
 with (
     'Dist::Zilla::Role::FileGatherer',
+    'Dist::Zilla::Role::FileMunger',
     'Dist::Zilla::Role::PERLANCAR::WriteModules',
 );
 
@@ -35,6 +36,12 @@ has load_modules => (is=>'rw');
 has snippet_before_instantiate_cmdline => (is=>'rw');
 
 sub gather_files {
+    # we actually don't generate scripts in this phase but in the later stage
+    # (FileMunger) to be able to get more built version of modules. we become
+    # FileGatherer plugin too to get add_file().
+}
+
+sub munge_files {
     my ($self, $arg) = @_;
 
     # i do it this way (unshift @INC, "lib" + require "Foo/Bar.pm" instead of
