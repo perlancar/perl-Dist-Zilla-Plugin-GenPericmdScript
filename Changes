@@ -1,5 +1,14 @@
 Revision history for Dist-Zilla-Plugin-GenPericmdScript
 
+0.16    2015-07-06 (PERLANCAR)
+
+        - Use built version of dist modules to include in scripts (i.e. when we
+          are using Perinci::CmdLine::Inline).
+
+        - Don't add runtime prereq to Perinci::CmdLine module if it's
+          Perinci::CmdLine::Inline.
+
+
 0.15    2015-07-02 (PERLANCAR)
 
 	- Pass version to App::GenPericmdScript's script_version (which
