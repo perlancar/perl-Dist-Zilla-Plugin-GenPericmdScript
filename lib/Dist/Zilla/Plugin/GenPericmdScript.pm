@@ -34,6 +34,7 @@ has config_filename => (is=>'rw');
 has ssl_verify_hostname => (is=>'rw');
 has load_modules => (is=>'rw');
 has snippet_before_instantiate_cmdline => (is=>'rw');
+has skip_format => (is=>'rw');
 
 sub gather_files {
     # we actually don't generate scripts in this phase but in the later stage
@@ -94,6 +95,7 @@ sub munge_files {
             subcommands_from_package_functions => $self->subcommands_from_package_functions,
             (include_package_functions_match => $self->include_package_functions_match) x !!$self->include_package_functions_match,
             (exclude_package_functions_match => $self->exclude_package_functions_match) x !!$self->exclude_package_functions_match,
+            skip_format => $self->skip_format ? 1:0,
         );
         $self->log_fatal("Failed generating $scriptname: $res->[0] - $res->[1]")
             unless $res->[0] == 200;
@@ -261,6 +263,10 @@ Comma-separated string, extra modules to load in the generated script.
 =head2 snippet_before_instantiate_cmdline => str
 
 This is like the configuration, but per-script.
+
+=head2 skip_format => bool
+
+Passed to Perinci::CmdLine object construction code.
 
 
 =head1 SEE ALSO
