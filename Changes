@@ -1,5 +1,9 @@
 Revision history for Dist-Zilla-Plugin-GenPericmdScript
 
+0.18    2015-07-08 (PERLANCAR)
+
+        - Add config: skip_format (passed to pericmd backend).
+
 0.17    2015-07-06 (PERLANCAR)
 
 	- Generate script in the later file munging phase instead of the
