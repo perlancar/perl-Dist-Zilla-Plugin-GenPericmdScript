@@ -9,6 +9,9 @@ use warnings;
 
 use Moose;
 with (
+    'Dist::Zilla::Role::FileFinderUser' => {
+        default_finders => [':InstallModules'],
+    },
     'Dist::Zilla::Role::FileGatherer',
     'Dist::Zilla::Role::FileMunger',
     'Dist::Zilla::Role::PERLANCAR::WriteModules',
@@ -40,6 +43,27 @@ sub gather_files {
     # we actually don't generate scripts in this phase but in the later stage
     # (FileMunger) to be able to get more built version of modules. we become
     # FileGatherer plugin too to get add_file().
+}
+
+# XXX extract list_own_modules, is_own_module to its own role/dist
+sub is_own_module {
+    use experimental 'smartmatch';
+
+    my ($self, $mod) = @_;
+
+    state $own_modules = do {
+        my @list;
+        for my $file (@{ $self->found_files }) {
+            my $name = $file->name;
+            next unless $name =~ s!^lib[/\\]!!;
+            $name =~ s![/\\]!::!g;
+            $name =~ s/\.(pm|pod)$//;
+            push @list, $name;
+        }
+        \@list;
+    };
+
+    $mod ~~ @$own_modules ? 1:0;
 }
 
 sub munge_files {
@@ -103,10 +127,32 @@ sub munge_files {
 
     {
         my $ver = 0;
-        $self->zilla->register_prereqs(
-            {phase => 'runtime'}, $res->[3]{'func.cmdline_module'} =>
-                $res->[3]{'func.cmdline_module_version'})
-            unless $res->[3]{'func.cmdline_module_inlined'};
+        my %mem;
+        my $perimod = $res->[3]{'func.cmdline_module'};
+        unless ($res->[3]{'func.cmdline_module_inlined'}) {
+            $self->log_debug(["Adding prereq to %s", $perimod]);
+            $self->zilla->register_prereqs(
+                {phase => 'runtime'}, $perimod =>
+                    $res->[3]{'func.cmdline_module_version'});
+            $mem{$perimod}++;
+        }
+        my @urls = ($self->url);
+        if ($subcommands && @$subcommands) {
+            for my $sc (@$subcommands) {
+                /:(.+)/;
+                push @urls, $1;
+            }
+        }
+        # add prereq to script backend modules
+        for my $url (@urls) {
+            my ($pkg) = $url =~ m!^(?:pm:)?/(.+)/.*!;
+            next unless $pkg;
+            $pkg =~ s!/!::!g;
+            next if $self->is_own_module($pkg);
+            next if $mem{$pkg}++;
+            $self->log_debug(["Adding prereq to %s", $pkg]);
+            $self->zilla->register_prereqs({phase => 'runtime'}, $pkg => 0);
+        }
     }
 
     my $fileobj = Dist::Zilla::File::InMemory->new(
