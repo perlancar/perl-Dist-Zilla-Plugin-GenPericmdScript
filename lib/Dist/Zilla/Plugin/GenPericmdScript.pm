@@ -22,6 +22,8 @@ use namespace::autoclean;
 use App::GenPericmdScript qw(gen_perinci_cmdline_script);
 use Module::Load;
 
+has build_load_modules => (is=>'rw');
+
 has url => (is=>'rw', required=>1);
 has subcommands => (is=>'rw');
 has subcommands_from_package_functions => (is=>'rw');
@@ -101,6 +103,13 @@ sub munge_files {
         my $mods_tempdir = $self->written_modules_dir;
 
         local @INC = ($mods_tempdir, @INC);
+
+        if ($self->build_load_modules) {
+            for (split(/\s*,\s*/, $self->build_load_modules)) {
+                load $_;
+            }
+        }
+
         $res = gen_perinci_cmdline_script(
             url => $self->url,
             script_name => $scriptname,
@@ -228,7 +237,7 @@ e.g.:
  ...
 
 
-=head1 CONFIGURATION
+=head1 CONFIGURATION (SCRIPT SPECIFICATION)
 
 =head2 url* => str
 
@@ -313,6 +322,13 @@ This is like the configuration, but per-script.
 =head2 skip_format => bool
 
 Passed to Perinci::CmdLine object construction code.
+
+
+=head1 CONFIGURATION (OTHER)
+
+=head2 build_load_modules => str
+
+A comma-separated string. Load module(s) during build process.
 
 
 =head1 SEE ALSO
