@@ -138,13 +138,13 @@ sub munge_files {
         my $ver = 0;
         my %mem;
         my $perimod = $res->[3]{'func.cmdline_module'};
-        unless ($res->[3]{'func.cmdline_module_inlined'}) {
-            $self->log_debug(["Adding prereq to %s", $perimod]);
-            $self->zilla->register_prereqs(
-                {phase => 'runtime'}, $perimod =>
-                    $res->[3]{'func.cmdline_module_version'});
-            $mem{$perimod}++;
-        }
+        $self->log_debug(["Adding prereq to %s", $perimod]);
+        $self->zilla->register_prereqs(
+            {phase => $res->[3]{'func.cmdline_module_inlined'} ?
+                 'build' : 'runtime'},
+            $perimod => $res->[3]{'func.cmdline_module_version'});
+        $mem{$perimod}++;
+
         my @urls = ($self->url);
         if ($subcommands && @$subcommands) {
             for my $sc (@$subcommands) {
