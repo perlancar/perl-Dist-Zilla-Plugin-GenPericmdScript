@@ -1,5 +1,11 @@
 Revision history for Dist-Zilla-Plugin-GenPericmdScript
 
+0.22    2015-07-30 (PERLANCAR)
+
+	- [Bugfix] Add prereq to pericmd-inline for develop phase, not
+	  build.
+
+
 0.21    2015-07-20 (PERLANCAR)
 
 	- Add build_requires prereq to Perinci::CmdLine::Inline when using
