@@ -141,7 +141,7 @@ sub munge_files {
         $self->log_debug(["Adding prereq to %s", $perimod]);
         $self->zilla->register_prereqs(
             {phase => $res->[3]{'func.cmdline_module_inlined'} ?
-                 'build' : 'runtime'},
+                 'develop' : 'runtime'},
             $perimod => $res->[3]{'func.cmdline_module_version'});
         $mem{$perimod}++;
 
