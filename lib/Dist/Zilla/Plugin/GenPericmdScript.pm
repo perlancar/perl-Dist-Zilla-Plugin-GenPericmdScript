@@ -168,6 +168,28 @@ sub munge_files {
         name => "bin/$scriptname", content => $res->[2]);
     $self->log(["Creating script 'bin/%s' from Riap function '%s'", $scriptname, $self->url]);
     $self->add_file($fileobj);
+
+    # create a separate completion script if we use Perinci::CmdLine::Inline,
+    # because Perinci::CmdLine::Inline currently does not support completion
+    # natively.
+    if ($res->[3]{'func.cmdline_module_inlined'}) {
+        require App::GenPericmdCompleterScript;
+        my $compres = App::GenPericmdCompleterScript::gen_perinci_cmdline_completer_script(
+            url => $self->url,
+            subcommands => $subcommands,
+            skip_format => $self->skip_format,
+            program_name => $scriptname,
+            load_module => $self->load_modules,
+            read_config => 0,
+            read_env => 0,
+        );
+        $self->log_fatal("Failed generating completer script _$scriptname: $compres->[0] - $compres->[1]")
+            unless $compres->[0] == 200;
+        my $compfileobj = Dist::Zilla::File::InMemory->new(
+            name => "bin/_$scriptname", content => $compres->[2]);
+        $self->log(["Creating completer script 'bin/_%s' from Riap function '%s'", $scriptname, $self->url]);
+        $self->add_file($compfileobj);
+    }
 }
 
 
