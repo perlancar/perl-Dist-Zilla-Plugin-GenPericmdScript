@@ -1,5 +1,11 @@
 Revision history for Dist-Zilla-Plugin-GenPericmdScript
 
+0.23    2015-08-19 (PERLANCAR)
+
+	- Generate completer scripts for Perinci::CmdLine::Inline-generated
+	  scripts, using App::GenPericmdCompleterScript.
+
+
 0.22    2015-07-30 (PERLANCAR)
 
 	- [Bugfix] Add prereq to pericmd-inline for develop phase, not
