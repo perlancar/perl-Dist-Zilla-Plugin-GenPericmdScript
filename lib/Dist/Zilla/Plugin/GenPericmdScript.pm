@@ -38,7 +38,8 @@ has extra_urls_for_version => (is=>'rw');
 has config_filename => (is=>'rw');
 has ssl_verify_hostname => (is=>'rw');
 has load_modules => (is=>'rw');
-has snippet_before_instantiate_cmdline => (is=>'rw');
+has code_before_instantiate_cmdline => (is=>'rw');
+has code_after_end => (is=>'rw');
 has skip_format => (is=>'rw');
 
 sub gather_files {
@@ -122,7 +123,8 @@ sub munge_files {
             cmdline => $self->cmdline,
             prefer_lite => $self->prefer_lite,
             ssl_verify_hostname => $self->ssl_verify_hostname,
-            snippet_before_instantiate_cmdline => $self->snippet_before_instantiate_cmdline,
+            code_before_instantiate_cmdline => $self->code_before_instantiate_cmdline,
+            code_after_end => $self->code_after_end,
             config_filename => $self->config_filename,
             (subcommand => $subcommands) x !!$subcommands,
             subcommands_from_package_functions => $self->subcommands_from_package_functions,
@@ -337,9 +339,9 @@ This can be used if the Riap function URL is https and you don't want to verify.
 
 Comma-separated string, extra modules to load in the generated script.
 
-=head2 snippet_before_instantiate_cmdline => str
+=head2 code_before_instantiate_cmdline => str
 
-This is like the configuration, but per-script.
+=head2 code_after_end => str
 
 =head2 skip_format => bool
 
