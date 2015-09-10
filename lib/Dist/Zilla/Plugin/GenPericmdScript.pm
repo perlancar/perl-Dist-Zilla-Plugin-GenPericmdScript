@@ -42,6 +42,8 @@ has code_before_instantiate_cmdline => (is=>'rw');
 has code_after_end => (is=>'rw');
 has skip_format => (is=>'rw');
 
+sub mvp_multivalue_args { qw(code_before_instantiate_cmdline code_after_end) }
+
 sub gather_files {
     # we actually don't generate scripts in this phase but in the later stage
     # (FileMunger) to be able to get more built version of modules. we become
@@ -111,6 +113,11 @@ sub munge_files {
             }
         }
 
+        my $code_before_instantiate_cmdline = $self->code_before_instantiate_cmdline;
+        if (ref($code_before_instantiate_cmdline) eq 'ARRAY') { $code_before_instantiate_cmdline = join("\n", @$code_before_instantiate_cmdline) }
+        my $code_after_end = $self->code_after_end;
+        if (ref($code_after_end) eq 'ARRAY') { $code_after_end = join("\n", @$code_after_end) }
+
         $res = gen_perinci_cmdline_script(
             url => $self->url,
             script_name => $scriptname,
@@ -123,8 +130,8 @@ sub munge_files {
             cmdline => $self->cmdline,
             prefer_lite => $self->prefer_lite,
             ssl_verify_hostname => $self->ssl_verify_hostname,
-            code_before_instantiate_cmdline => $self->code_before_instantiate_cmdline,
-            code_after_end => $self->code_after_end,
+            code_before_instantiate_cmdline => $code_before_instantiate_cmdline,
+            code_after_end => $code_after_end,
             config_filename => $self->config_filename,
             (subcommand => $subcommands) x !!$subcommands,
             subcommands_from_package_functions => $self->subcommands_from_package_functions,
