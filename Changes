@@ -1,5 +1,13 @@
 Revision history for Dist-Zilla-Plugin-GenPericmdScript
 
+0.24    2015-09-11 (PERLANCAR)
+
+	- Allow specifying code_* in multiple configuration lines.
+
+	- [Incompatible change] Rename snippet_* configuration to code_*,
+	  add code_after_end.
+
+
 0.23    2015-08-19 (PERLANCAR)
 
 	- Generate completer scripts for Perinci::CmdLine::Inline-generated
