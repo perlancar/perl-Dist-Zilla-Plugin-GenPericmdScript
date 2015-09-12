@@ -1,5 +1,13 @@
 Revision history for Dist-Zilla-Plugin-GenPericmdScript
 
+0.25    2015-09-12 (PERLANCAR)
+
+	- Add configuration: summary.
+
+	- Set default script name from package name if url is a package
+	  URL.
+
+
 0.24    2015-09-11 (PERLANCAR)
 
 	- Allow specifying code_* in multiple configuration lines.
