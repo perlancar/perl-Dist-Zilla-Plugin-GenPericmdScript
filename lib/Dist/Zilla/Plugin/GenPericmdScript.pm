@@ -30,6 +30,7 @@ has subcommands_from_package_functions => (is=>'rw');
 has include_package_functions_match => (is=>'rw');
 has exclude_package_functions_match => (is=>'rw');
 has name => (is=>'rw');
+has summary => (is=>'rw');
 has cmdline => (is=>'rw');
 has prefer_lite => (is=>'rw');
 has enable_log => (is=>'rw');
@@ -126,6 +127,7 @@ sub munge_files {
             url => $self->url,
             script_name => $scriptname,
             script_version => $self->zilla->version,
+            script_summary => $self->summary,
             interpreter_path => 'perl',
             load_module => $self->load_modules ? [split(/\s*,\s*/, $self->load_modules)] : undef,
             log => $self->enable_log,
@@ -302,8 +304,13 @@ Will be passed to App::GenPericmdScript::gen_perinci_cmdline_script() backend.
 
 =head2 name => str
 
-Name of script to create. Default will be taken from function name, with C<_>
-replaced to C<->.
+Name of script to create. Default will be taken from function (or package) name,
+with C<_> replaced to C<->.
+
+=head2 summary => str
+
+Will be passed to C<script_summary> in
+App::GenPericmdScript::gen_perinci_cmdline_script() backend.
 
 =head2 cmdline => str
 
