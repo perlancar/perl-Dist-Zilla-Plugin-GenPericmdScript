@@ -86,7 +86,11 @@ sub munge_files {
     my $scriptname = $self->name;
     if (!$scriptname) {
         $scriptname = $self->url;
-        $scriptname =~ s!.+/!!;
+        if ($scriptname =~ m!([^/]+)/\z!) {
+            $scriptname = $1;
+        } else {
+            $scriptname =~ s!.+/!!;
+        }
         $scriptname =~ s/[^A-Za-z0-9]+/-/g;
         $scriptname =~ s/^-//;
         $scriptname = "script" if length($scriptname) == 0;
