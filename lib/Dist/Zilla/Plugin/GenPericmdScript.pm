@@ -34,6 +34,7 @@ has summary => (is=>'rw');
 has cmdline => (is=>'rw');
 has prefer_lite => (is=>'rw');
 has enable_log => (is=>'rw');
+has pass_cmdline_object => (is=>'rw');
 has default_log_level => (is=>'rw');
 has extra_urls_for_version => (is=>'rw');
 has config_filename => (is=>'rw');
@@ -133,6 +134,7 @@ sub munge_files {
             log => $self->enable_log,
             ($self->extra_urls_for_version ? (extra_urls_for_version => [split(/\s*,\s*/, $self->extra_urls_for_version)]) : ()),
             default_log_level => $self->default_log_level,
+            pass_cmdline_object => $self->pass_cmdline_object,
             cmdline => $self->cmdline,
             prefer_lite => $self->prefer_lite,
             ssl_verify_hostname => $self->ssl_verify_hostname,
@@ -335,6 +337,10 @@ If set, will add this code to the generated script:
  BEGIN { no warnings; $main::Log_Level = "..." }
 
 This can be used if you want your script to be verbose by default, for example.
+
+=head2 pass_cmdline_object => bool
+
+Will be passed to Perinci::CmdLine object construction code.
 
 =head2 extra_urls_for_version => str
 
