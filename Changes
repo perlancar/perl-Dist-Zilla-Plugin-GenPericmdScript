@@ -1,5 +1,10 @@
 Revision history for Dist-Zilla-Plugin-GenPericmdScript
 
+0.26    2015-09-15 (PERLANCAR)
+
+	- Add configuration: pass_cmdline_object.
+
+
 0.25    2015-09-12 (PERLANCAR)
 
 	- Add configuration: summary.
