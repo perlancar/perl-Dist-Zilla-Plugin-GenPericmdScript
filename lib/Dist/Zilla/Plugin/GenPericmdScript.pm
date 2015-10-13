@@ -19,7 +19,7 @@ with (
 
 use namespace::autoclean;
 
-use App::GenPericmdScript qw(gen_perinci_cmdline_script);
+use Perinci::CmdLine::Gen qw(gen_pericmd_script);
 use Module::Load;
 
 has build_load_modules => (is=>'rw');
@@ -124,7 +124,7 @@ sub munge_files {
         my $code_after_end = $self->code_after_end;
         if (ref($code_after_end) eq 'ARRAY') { $code_after_end = join("\n", @$code_after_end) }
 
-        $res = gen_perinci_cmdline_script(
+        $res = gen_pericmd_script(
             url => $self->url,
             script_name => $scriptname,
             script_version => $self->zilla->version,
