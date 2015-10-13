@@ -1,5 +1,13 @@
 Revision history for Dist-Zilla-Plugin-GenPericmdScript
 
+0.27    2015-10-13 (PERLANCAR)
+
+	- No functional changes.
+
+	- Update (backend module changed from App::GenPericmdScript to
+	  Perinci::CmdLine::Gen).
+
+
 0.26    2015-09-15 (PERLANCAR)
 
 	- Add configuration: pass_cmdline_object.
