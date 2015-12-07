@@ -141,7 +141,7 @@ sub munge_files {
             code_before_instantiate_cmdline => $code_before_instantiate_cmdline,
             code_after_end => $code_after_end,
             config_filename => $self->config_filename,
-            (subcommand => $subcommands) x !!$subcommands,
+            (subcommands => $subcommands) x !!$subcommands,
             subcommands_from_package_functions => $self->subcommands_from_package_functions,
             (include_package_functions_match => $self->include_package_functions_match) x !!$self->include_package_functions_match,
             (exclude_package_functions_match => $self->exclude_package_functions_match) x !!$self->exclude_package_functions_match,
