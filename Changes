@@ -1,5 +1,10 @@
 Revision history for Dist-Zilla-Plugin-GenPericmdScript
 
+0.28    2015-12-07 (PERLANCAR)
+
+        - [Bugfix] Used wrong argument spelling.
+
+
 0.27    2015-10-13 (PERLANCAR)
 
 	- No functional changes.
