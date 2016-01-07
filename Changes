@@ -1,5 +1,14 @@
 Revision history for Dist-Zilla-Plugin-GenPericmdScript
 
+0.29    2016-01-07 (PERLANCAR)
+
+        - Add config_dirs configuration.
+
+        - Adjust to Perinci::CmdLine::Gen 0.25 (config_filename can now contain
+          multiple values, there is now func.extra_modules to give hints about
+          extra modules required).
+
+
 0.28    2015-12-07 (PERLANCAR)
 
         - [Bugfix] Used wrong argument spelling.
