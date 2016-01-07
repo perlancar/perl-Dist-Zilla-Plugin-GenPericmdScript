@@ -169,8 +169,7 @@ sub munge_files {
             $self->log_debug(["Adding prereq to extra module %s", $extramod]);
             $self->zilla->register_prereqs(
                  {phase => 'runtime'},
-                 $perimod => $extramods->{$extramod}
-             );
+                 $extramod => $extramods->{$extramod});
             $mem{$extramod}++;
         }
 
