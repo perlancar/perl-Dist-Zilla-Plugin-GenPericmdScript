@@ -38,13 +38,14 @@ has pass_cmdline_object => (is=>'rw');
 has default_log_level => (is=>'rw');
 has extra_urls_for_version => (is=>'rw');
 has config_filename => (is=>'rw');
+has config_dirs => (is=>'rw');
 has ssl_verify_hostname => (is=>'rw');
 has load_modules => (is=>'rw');
 has code_before_instantiate_cmdline => (is=>'rw');
 has code_after_end => (is=>'rw');
 has skip_format => (is=>'rw');
 
-sub mvp_multivalue_args { qw(code_before_instantiate_cmdline code_after_end) }
+sub mvp_multivalue_args { qw(code_before_instantiate_cmdline code_after_end config_filename config_dirs) }
 
 sub gather_files {
     # we actually don't generate scripts in this phase but in the later stage
@@ -140,7 +141,8 @@ sub munge_files {
             ssl_verify_hostname => $self->ssl_verify_hostname,
             code_before_instantiate_cmdline => $code_before_instantiate_cmdline,
             code_after_end => $code_after_end,
-            config_filename => $self->config_filename,
+            (config_filename => $self->config_filename) x !!$self->config_filename,
+            (config_dirs => $self->config_dirs) x !!$self->config_dirs,
             (subcommands => $subcommands) x !!$subcommands,
             subcommands_from_package_functions => $self->subcommands_from_package_functions,
             (include_package_functions_match => $self->include_package_functions_match) x !!$self->include_package_functions_match,
@@ -155,12 +157,22 @@ sub munge_files {
         my $ver = 0;
         my %mem;
         my $perimod = $res->[3]{'func.cmdline_module'};
-        $self->log_debug(["Adding prereq to %s", $perimod]);
+        $self->log_debug(["Adding prereq to cmdline module %s", $perimod]);
         $self->zilla->register_prereqs(
             {phase => $res->[3]{'func.cmdline_module_inlined'} ?
                  'develop' : 'runtime'},
             $perimod => $res->[3]{'func.cmdline_module_version'});
         $mem{$perimod}++;
+
+        my $extramods = $res->[3]{'func.extra_modules'} // {};
+        for my $extramod (sort keys %$extramods) {
+            $self->log_debug(["Adding prereq to extra module %s", $extramod]);
+            $self->zilla->register_prereqs(
+                 {phase => 'runtime'},
+                 $perimod => $extramods->{$extramod}
+             );
+            $mem{$extramod}++;
+        }
 
         my @urls = ($self->url);
         if ($subcommands && @$subcommands) {
@@ -347,7 +359,11 @@ Will be passed to Perinci::CmdLine object construction code.
 Comma-separated string, will be passed to Perinci::CmdLine object construction
 code (as array).
 
-=head2 config_filename => str
+=head2 config_filename => str|array[str]
+
+Will be passed to Perinci::CmdLine object construction code.
+
+=head2 config_dirs => array[str]
 
 Will be passed to Perinci::CmdLine object construction code.
 
