@@ -44,8 +44,9 @@ has load_modules => (is=>'rw');
 has code_before_instantiate_cmdline => (is=>'rw');
 has code_after_end => (is=>'rw');
 has skip_format => (is=>'rw');
+has use_utf8 => (is=>'rw');
 
-sub mvp_multivalue_args { qw(code_before_instantiate_cmdline code_after_end config_filename config_dirs) }
+sub mvp_multivalue_args { qw(build_load_modules load_modules code_before_instantiate_cmdline code_after_end config_filename config_dirs) }
 
 sub gather_files {
     # we actually don't generate scripts in this phase but in the later stage
@@ -114,10 +115,8 @@ sub munge_files {
 
         local @INC = ($mods_tempdir, @INC);
 
-        if ($self->build_load_modules) {
-            for (split(/\s*,\s*/, $self->build_load_modules)) {
-                load $_;
-            }
+        for (@{ $self->build_load_modules // []}) {
+            load $_;
         }
 
         my $code_before_instantiate_cmdline = $self->code_before_instantiate_cmdline;
@@ -125,13 +124,13 @@ sub munge_files {
         my $code_after_end = $self->code_after_end;
         if (ref($code_after_end) eq 'ARRAY') { $code_after_end = join("\n", @$code_after_end) }
 
-        $res = gen_pericmd_script(
+        my %gen_args = (
             url => $self->url,
             script_name => $scriptname,
             script_version => $self->zilla->version,
             script_summary => $self->summary,
             interpreter_path => 'perl',
-            load_module => $self->load_modules ? [split(/\s*,\s*/, $self->load_modules)] : undef,
+            (load_module => $self->load_modules) x !!$self->load_modules,
             log => $self->enable_log,
             ($self->extra_urls_for_version ? (extra_urls_for_version => [split(/\s*,\s*/, $self->extra_urls_for_version)]) : ()),
             default_log_level => $self->default_log_level,
@@ -148,7 +147,10 @@ sub munge_files {
             (include_package_functions_match => $self->include_package_functions_match) x !!$self->include_package_functions_match,
             (exclude_package_functions_match => $self->exclude_package_functions_match) x !!$self->exclude_package_functions_match,
             skip_format => $self->skip_format ? 1:0,
+            use_utf8 => $self->use_utf8,
         );
+        #use DD; dd \%gen_args;
+        $res = gen_pericmd_script(%gen_args);
         $self->log_fatal("Failed generating $scriptname: $res->[0] - $res->[1]")
             unless $res->[0] == 200;
     }
@@ -207,7 +209,7 @@ sub munge_files {
             subcommands => $subcommands,
             skip_format => $self->skip_format,
             program_name => $scriptname,
-            load_module => $self->load_modules,
+            (load_module => $self->load_modules) x !!$self->load_modules,
             read_config => 0,
             read_env => 0,
         );
@@ -374,9 +376,9 @@ If set to 0, will add this code to the generated script:
 
 This can be used if the Riap function URL is https and you don't want to verify.
 
-=head2 load_modules => str
+=head2 load_modules => array[str]
 
-Comma-separated string, extra modules to load in the generated script.
+Extra modules to load in the generated script.
 
 =head2 code_before_instantiate_cmdline => str
 
@@ -386,12 +388,16 @@ Comma-separated string, extra modules to load in the generated script.
 
 Passed to Perinci::CmdLine object construction code.
 
+=head2 use_utf8 => bool
+
+Passed to Perinci::CmdLine object construction code.
+
 
 =head1 CONFIGURATION (OTHER)
 
-=head2 build_load_modules => str
+=head2 build_load_modules => array[str]
 
-A comma-separated string. Load module(s) during build process.
+Load modules during build process.
 
 
 =head1 SEE ALSO
