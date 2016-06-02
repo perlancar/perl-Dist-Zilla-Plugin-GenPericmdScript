@@ -45,8 +45,9 @@ has code_before_instantiate_cmdline => (is=>'rw');
 has code_after_end => (is=>'rw');
 has skip_format => (is=>'rw');
 has use_utf8 => (is=>'rw');
+has allow_prereq => (is=>'rw');
 
-sub mvp_multivalue_args { qw(build_load_modules load_modules code_before_instantiate_cmdline code_after_end config_filename config_dirs) }
+sub mvp_multivalue_args { qw(build_load_modules load_modules code_before_instantiate_cmdline code_after_end config_filename config_dirs allow_prereq) }
 
 sub gather_files {
     # we actually don't generate scripts in this phase but in the later stage
@@ -148,6 +149,7 @@ sub munge_files {
             (exclude_package_functions_match => $self->exclude_package_functions_match) x !!$self->exclude_package_functions_match,
             skip_format => $self->skip_format ? 1:0,
             use_utf8 => $self->use_utf8,
+            (allow_prereq => $self->allow_prereq) x !!$self->allow_prereq,
         );
         #use DD; dd \%gen_args;
         $res = gen_pericmd_script(%gen_args);
@@ -307,15 +309,15 @@ of SUBCOMMAND_NAME:URL[:SUMMARY]. Example:
 
 =head2 subcommands_from_package_functions => bool
 
-Will be passed to App::GenPericmdScript::gen_perinci_cmdline_script() backend.
+Will be passed to Perinci::CmdLine::Gen backend.
 
 =head2 include_package_functions_match => re
 
-Will be passed to App::GenPericmdScript::gen_perinci_cmdline_script() backend.
+Will be passed to Perinci::CmdLine::Gen backend.
 
 =head2 exclude_package_functions_match => re
 
-Will be passed to App::GenPericmdScript::gen_perinci_cmdline_script() backend.
+Will be passed to Perinci::CmdLine::Gen backend.
 
 =head2 name => str
 
@@ -324,8 +326,7 @@ with C<_> replaced to C<->.
 
 =head2 summary => str
 
-Will be passed to C<script_summary> in
-App::GenPericmdScript::gen_perinci_cmdline_script() backend.
+Will be passed to Perinci::CmdLine::Gen backend (as C<script_summary>).
 
 =head2 cmdline => str
 
@@ -391,6 +392,10 @@ Passed to Perinci::CmdLine object construction code.
 =head2 use_utf8 => bool
 
 Passed to Perinci::CmdLine object construction code.
+
+=head2 allow_prereq => bool
+
+Will be passed to Perinci::CmdLine::Gen backend.
 
 
 =head1 CONFIGURATION (OTHER)
