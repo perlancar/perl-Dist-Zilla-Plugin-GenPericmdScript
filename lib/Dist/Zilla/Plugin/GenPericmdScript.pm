@@ -46,6 +46,8 @@ has code_after_end => (is=>'rw');
 has skip_format => (is=>'rw');
 has use_utf8 => (is=>'rw');
 has allow_prereq => (is=>'rw');
+has per_arg_json => (is=>'rw');
+has per_arg_yaml => (is=>'rw');
 
 sub mvp_multivalue_args { qw(build_load_modules load_modules code_before_instantiate_cmdline code_after_end config_filename config_dirs allow_prereq) }
 
@@ -150,6 +152,8 @@ sub munge_files {
             skip_format => $self->skip_format ? 1:0,
             use_utf8 => $self->use_utf8,
             (allow_prereq => $self->allow_prereq) x !!$self->allow_prereq,
+            (per_arg_json => $self->per_arg_json) x !!defined($self->per_arg_json),
+            (per_arg_yaml => $self->per_arg_yaml) x !!defined($self->per_arg_yaml),
         );
         #use DD; dd \%gen_args;
         $res = gen_pericmd_script(%gen_args);
@@ -394,6 +398,14 @@ Passed to Perinci::CmdLine object construction code.
 Passed to Perinci::CmdLine object construction code.
 
 =head2 allow_prereq => bool
+
+Will be passed to Perinci::CmdLine::Gen backend.
+
+=head2 per_arg_json => bool
+
+Will be passed to Perinci::CmdLine::Gen backend.
+
+=head2 per_arg_yaml => bool
 
 Will be passed to Perinci::CmdLine::Gen backend.
 
