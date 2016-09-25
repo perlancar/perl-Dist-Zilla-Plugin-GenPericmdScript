@@ -1,5 +1,11 @@
 Revision history for Dist-Zilla-Plugin-GenPericmdScript
 
+0.32    2016-09-25 (PERLANCAR)
+
+	- Add configuration: per_arg_json, per_arg_yaml
+	  (Perinci::CmdLine::Gen 0.33).
+
+
 0.31    2016-06-02 (PERLANCAR)
 
 	- Add configuration allow_prereq (passed to backend,
