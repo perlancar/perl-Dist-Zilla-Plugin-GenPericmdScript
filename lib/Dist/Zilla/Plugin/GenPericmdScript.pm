@@ -43,6 +43,7 @@ has ssl_verify_hostname => (is=>'rw');
 has load_modules => (is=>'rw');
 has code_before_instantiate_cmdline => (is=>'rw');
 has code_after_end => (is=>'rw');
+has default_format => (is=>'rw');
 has skip_format => (is=>'rw');
 has use_utf8 => (is=>'rw');
 has allow_prereq => (is=>'rw');
@@ -149,6 +150,7 @@ sub munge_files {
             subcommands_from_package_functions => $self->subcommands_from_package_functions,
             (include_package_functions_match => $self->include_package_functions_match) x !!$self->include_package_functions_match,
             (exclude_package_functions_match => $self->exclude_package_functions_match) x !!$self->exclude_package_functions_match,
+            (default_format => $self->default_format) x !!$self->default_format,
             skip_format => $self->skip_format ? 1:0,
             use_utf8 => $self->use_utf8,
             (allow_prereq => $self->allow_prereq) x !!$self->allow_prereq,
@@ -213,6 +215,7 @@ sub munge_files {
         my $compres = App::GenPericmdCompleterScript::gen_perinci_cmdline_completer_script(
             url => $self->url,
             subcommands => $subcommands,
+            #default_format => $self->default_format,
             skip_format => $self->skip_format,
             program_name => $scriptname,
             (load_module => $self->load_modules) x !!$self->load_modules,
@@ -388,6 +391,10 @@ Extra modules to load in the generated script.
 =head2 code_before_instantiate_cmdline => str
 
 =head2 code_after_end => str
+
+=head2 default_format => str
+
+Passed to Perinci::CmdLine object construction code.
 
 =head2 skip_format => bool
 
