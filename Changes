@@ -1,5 +1,10 @@
 Revision history for Dist-Zilla-Plugin-GenPericmdScript
 
+0.33    2016-10-27 (PERLANCAR)
+
+	- Add default_format configuration.
+
+
 0.32    2016-09-25 (PERLANCAR)
 
 	- Add configuration: per_arg_json, per_arg_yaml
