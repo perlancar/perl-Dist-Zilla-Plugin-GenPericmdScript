@@ -1,5 +1,11 @@
 Revision history for Dist-Zilla-Plugin-GenPericmdScript
 
+0.34    2016-12-15 (PERLANCAR)
+
+	- Add default_dry_run configuration (Perinci::CmdLine::Gen 0.36,
+	  Perinci::CmdLine::Lite 1.65).
+
+
 0.33    2016-10-27 (PERLANCAR)
 
 	- Add default_format configuration.
