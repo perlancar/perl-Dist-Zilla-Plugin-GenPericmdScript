@@ -50,6 +50,8 @@ has default_dry_run => (is=>'rw');
 has allow_prereq => (is=>'rw');
 has per_arg_json => (is=>'rw');
 has per_arg_yaml => (is=>'rw');
+has validate_args => (is=>'rw');
+has pack_deps => (is=>'rw');
 
 sub mvp_multivalue_args { qw(build_load_modules load_modules code_before_instantiate_cmdline code_after_end config_filename config_dirs allow_prereq) }
 
@@ -158,6 +160,8 @@ sub munge_files {
             (allow_prereq => $self->allow_prereq) x !!$self->allow_prereq,
             (per_arg_json => $self->per_arg_json) x !!defined($self->per_arg_json),
             (per_arg_yaml => $self->per_arg_yaml) x !!defined($self->per_arg_yaml),
+            (validate_args => $self->validate_args) x !!defined($self->validate_args),
+            (pack_deps => $self->pack_deps) x !!defined($self->pack_deps),
         );
         #use DD; dd \%gen_args;
         $res = gen_pericmd_script(%gen_args);
