@@ -109,7 +109,7 @@ sub munge_files {
 
     my $subcommands;
     if ($self->subcommands) {
-        $subcommands = [split /\s*,\s*/, $self->subcommands];
+        $subcommands = {split /\s*=\s*|\s+/, $self->subcommands};
     }
 
     my $res;
@@ -190,10 +190,9 @@ sub munge_files {
         }
 
         my @urls = ($self->url);
-        if ($subcommands && @$subcommands) {
-            for my $sc (@$subcommands) {
-                /:(.+)/;
-                push @urls, $1;
+        if ($subcommands && keys %$subcommands) {
+            for my $sc_name (sort keys %$subcommands) {
+                push @urls, $subcommands->{$sc_name};
             }
         }
         # add prereq to script backend modules
@@ -314,11 +313,11 @@ package URL.
 
 =head2 subcommands => str
 
-For creating a CLI script with subcommands. Value is a comma-separated entries
-of subcommand specification. Each subcommand specification must be in the form
-of SUBCOMMAND_NAME:URL[:SUMMARY]. Example:
+For creating a CLI script with subcommands. Value is a whitespace-separated
+entries of subcommand specification. Each subcommand specification must be in
+the form of SUBCOMMAND_NAME=URL[:SUMMARY]. Example:
 
- delete:/My/App/delete_item, add:/My/App/add_item, refresh:/My/App/refresh_item:Refetch an item from source
+ delete=/My/App/delete_item add=/My/App/add_item refresh=/My/App/refresh_item:Refetch an item from source
 
 =head2 subcommands_from_package_functions => bool
 
