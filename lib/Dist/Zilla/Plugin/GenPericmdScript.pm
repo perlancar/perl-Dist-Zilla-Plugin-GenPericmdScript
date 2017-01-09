@@ -142,7 +142,7 @@ sub munge_files {
             ($self->extra_urls_for_version ? (extra_urls_for_version => [split(/\s*,\s*/, $self->extra_urls_for_version)]) : ()),
             default_log_level => $self->default_log_level,
             pass_cmdline_object => $self->pass_cmdline_object,
-            cmdline => $self->cmdline,
+            (cmdline => $self->cmdline) x !!defined($self->cmdline),
             prefer_lite => $self->prefer_lite,
             ssl_verify_hostname => $self->ssl_verify_hostname,
             code_before_instantiate_cmdline => $code_before_instantiate_cmdline,
