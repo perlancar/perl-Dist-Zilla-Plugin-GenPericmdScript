@@ -218,7 +218,7 @@ sub munge_files {
     # natively.
     if ($res->[3]{'func.cmdline_module_inlined'}) {
         require App::GenPericmdCompleterScript;
-        my $compres = App::GenPericmdCompleterScript::gen_perinci_cmdline_completer_script(
+        my $compres = App::GenPericmdCompleterScript::gen_pericmd_completer_script(
             url => $self->url,
             subcommands => $subcommands,
             #default_format => $self->default_format,
