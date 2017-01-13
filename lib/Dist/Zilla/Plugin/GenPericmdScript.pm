@@ -53,6 +53,8 @@ has per_arg_yaml => (is=>'rw');
 has validate_args => (is=>'rw');
 has pack_deps => (is=>'rw');
 
+has inline_generate_completer => (is=>'rw', default=>1);
+
 sub mvp_multivalue_args { qw(build_load_modules load_modules code_before_instantiate_cmdline code_after_end config_filename config_dirs allow_prereq) }
 
 sub gather_files {
@@ -216,7 +218,7 @@ sub munge_files {
     # create a separate completion script if we use Perinci::CmdLine::Inline,
     # because Perinci::CmdLine::Inline currently does not support completion
     # natively.
-    if ($res->[3]{'func.cmdline_module_inlined'}) {
+    if ($res->[3]{'func.cmdline_module_inlined'} && $self->inline_generate_completer) {
         require App::GenPericmdCompleterScript;
         my $compres = App::GenPericmdCompleterScript::gen_pericmd_completer_script(
             url => $self->url,
@@ -424,6 +426,13 @@ Will be passed to Perinci::CmdLine::Gen backend.
 
 
 =head1 CONFIGURATION (OTHER)
+
+=head2 inline_generate_completer => bool (default: 1)
+
+Perinci::CmdLine::Inline-generated scripts currently cannot do shell completion
+on its own, but relies on a separate completer script (e.g. if the script is
+C<bin/foo> then the completer will be generated at C<bin/_foo>). This option can
+be used to suppress the generation of completer script.
 
 =head2 build_load_modules => array[str]
 
