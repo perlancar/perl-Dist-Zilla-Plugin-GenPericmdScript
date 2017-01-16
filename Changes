@@ -1,3 +1,8 @@
+0.40    2017-01-16 (PERLANCAR)
+
+	- Add configuration: use_cleanser.
+
+
 0.39    2017-01-13 (PERLANCAR)
 
 	- Add configuration: inline_generate_completer to allow suppressing
