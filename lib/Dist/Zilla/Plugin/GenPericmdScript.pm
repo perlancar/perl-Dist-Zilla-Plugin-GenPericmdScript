@@ -46,6 +46,7 @@ has code_after_end => (is=>'rw');
 has default_format => (is=>'rw');
 has skip_format => (is=>'rw');
 has use_utf8 => (is=>'rw');
+has use_cleanser => (is=>'rw');
 has default_dry_run => (is=>'rw');
 has allow_prereq => (is=>'rw');
 has per_arg_json => (is=>'rw');
@@ -158,6 +159,7 @@ sub munge_files {
             (default_format => $self->default_format) x !!$self->default_format,
             skip_format => $self->skip_format ? 1:0,
             use_utf8 => $self->use_utf8,
+            (use_cleanser => $self->use_cleanser) x !!(defined $self->use_cleanser),
             (default_dry_run => $self->default_dry_run) x !!defined($self->default_dry_run),
             (allow_prereq => $self->allow_prereq) x !!$self->allow_prereq,
             (per_arg_json => $self->per_arg_json) x !!defined($self->per_arg_json),
