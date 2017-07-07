@@ -213,8 +213,8 @@ sub munge_files {
     }
 
     my $fileobj = Dist::Zilla::File::InMemory->new(
-        name => "bin/$scriptname", content => $res->[2]);
-    $self->log(["Creating script 'bin/%s' from Riap function '%s'", $scriptname, $self->url]);
+        name => "script/$scriptname", content => $res->[2]);
+    $self->log(["Creating script 'script/%s' from Riap function '%s'", $scriptname, $self->url]);
     $self->add_file($fileobj);
 
     # create a separate completion script if we use Perinci::CmdLine::Inline,
@@ -235,8 +235,8 @@ sub munge_files {
         $self->log_fatal("Failed generating completer script _$scriptname: $compres->[0] - $compres->[1]")
             unless $compres->[0] == 200;
         my $compfileobj = Dist::Zilla::File::InMemory->new(
-            name => "bin/_$scriptname", content => $compres->[2]);
-        $self->log(["Creating completer script 'bin/_%s' from Riap function '%s'", $scriptname, $self->url]);
+            name => "script/_$scriptname", content => $compres->[2]);
+        $self->log(["Creating completer script 'script/_%s' from Riap function '%s'", $scriptname, $self->url]);
         $self->add_file($compfileobj);
     }
 }
@@ -252,16 +252,16 @@ __PACKAGE__->meta->make_immutable;
 
 In F<dist.ini>:
 
- ; generate a script, by default called bin/check-palindrome
+ ; generate a script, by default called script/check-palindrome
  [GenPericmdScript]
  url=/My/Palindrome/check_palindrome
 
- ; generate another script, called bin/lssrv
+ ; generate another script, called script/lssrv
  [GenPericmdScript / Gen_lssrv]
  url=/My/App/list_servers
  name=lssrv
 
-After build, C<bin/check-palindrome> and C<bin/lssrv> will be created.
+After build, C<script/check-palindrome> and C<script/lssrv> will be created.
 
 
 =head1 DESCRIPTION
@@ -433,8 +433,8 @@ Will be passed to Perinci::CmdLine::Gen backend.
 
 Perinci::CmdLine::Inline-generated scripts currently cannot do shell completion
 on its own, but relies on a separate completer script (e.g. if the script is
-C<bin/foo> then the completer will be generated at C<bin/_foo>). This option can
-be used to suppress the generation of completer script.
+C<script/foo> then the completer will be generated at C<script/_foo>). This
+option can be used to suppress the generation of completer script.
 
 =head2 build_load_modules => array[str]
 
