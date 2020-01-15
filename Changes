@@ -268,6 +268,7 @@
 	- Only load Markdown::To::POD if there is description property.
 
 
-0.01     2014-08-16 (SHARYANTO) - Happy 16th CPAN Day!
+0.01     2014-08-16  Released-By: SHARYANTO; Note: Happy 16th CPAN Day!
 
          - First release.
+
