@@ -1,3 +1,9 @@
+0.422   2020-04-01  Released-By: PERLANCAR; Urgency: medium
+
+	- Update to Perinci::CmdLine::Gen 0.496, add configuration:
+	  allow_unknown_opts.
+
+
 0.421   2018-01-17  Released-By: PERLANCAR
 
 	- Update to Perinci::CmdLine::Gen 0.484, add configurations:
