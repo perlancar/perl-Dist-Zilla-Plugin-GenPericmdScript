@@ -34,6 +34,9 @@ has config_dirs => (is=>'rw');
 has config_filename => (is=>'rw');
 has copt_help_enable => (is=>'rw');
 has copt_help_getopt => (is=>'rw');
+has copt_naked_res_default => (is=>'rw');
+has copt_naked_res_enable => (is=>'rw');
+has copt_naked_res_getopt => (is=>'rw');
 has copt_version_enable => (is=>'rw');
 has copt_version_getopt => (is=>'rw');
 has default_dry_run => (is=>'rw');
@@ -181,6 +184,9 @@ sub munge_files {
             (copt_help_getopt => $self->copt_help_getopt) x !!defined($self->copt_help_getopt),
             (copt_version_enable => $self->copt_version_enable) x !!defined($self->copt_version_enable),
             (copt_version_getopt => $self->copt_version_getopt) x !!defined($self->copt_version_getopt),
+            (copt_naked_res_default => $self->copt_naked_res_default) x !!defined($self->copt_naked_res_default),
+            (copt_naked_res_enable  => $self->copt_naked_res_enable)  x !!defined($self->copt_naked_res_enable),
+            (copt_naked_res_getopt  => $self->copt_naked_res_getopt)  x !!defined($self->copt_naked_res_getopt),
         );
         #use DD; dd \%gen_args;
         $res = gen_pericmd_script(%gen_args);
