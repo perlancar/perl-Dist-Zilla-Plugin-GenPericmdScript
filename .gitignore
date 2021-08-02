@@ -2,3 +2,4 @@ Dist-Zilla-Plugin-GenPericmdScript-*
 .build
 *~
 nytprof*
+.DS_Store
