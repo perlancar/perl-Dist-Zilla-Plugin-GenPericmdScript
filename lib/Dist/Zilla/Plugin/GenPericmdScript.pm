@@ -1,10 +1,5 @@
 package Dist::Zilla::Plugin::GenPericmdScript;
 
-# AUTHORITY
-# DATE
-# DIST
-# VERSION
-
 use 5.010001;
 use strict;
 use warnings;
@@ -23,6 +18,11 @@ use namespace::autoclean;
 
 use Perinci::CmdLine::Gen qw(gen_pericmd_script);
 use Module::Load;
+
+# AUTHORITY
+# DATE
+# DIST
+# VERSION
 
 has allow_prereq => (is=>'rw');
 has allow_unknown_opts => (is=>'rw');
@@ -505,9 +505,9 @@ Load modules during build process.
 
 =head1 SEE ALSO
 
-L<Rinci>
+L<Perinci::CmdLine>, the kind of CLI script this plugin is generating.
 
-L<Pod::Weaver::Plugin::Rinci> to fill more stuffs to the POD of the generated
-script.
+L<Perinci> and L<Rinci>, for the background information.
 
-C<Dist::Zilla::Plugin::Rinci::*> for plugins that utilize Rinci metadata.
+L<Dist::Zilla::Plugin::Perinci::CmdLine>, if you are building
+C<Perinci::CmdLine::*> distribution.
